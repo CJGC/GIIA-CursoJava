@@ -7,15 +7,19 @@ package homeworks;
 public class NumbersWithout2and5 {
     private int range2;
     private int range5;
+    private int start;
+    private int end;
     
-    NumbersWithout2and5() {
+    NumbersWithout2and5(int start,int end) {
         this.range2 = 2;
         this.range5 = 5;
-    };
-    
+        this.start = start;
+        this.end = end;
+    }; 
+
     public void printNumbers() {
         
-        for(int i=1; i <= 100; i++) {
+        for(int i=this.start; i <= this.end; i++) {
             if(this.range2 == i) {
                 this.range2 += 10;
                 continue;
