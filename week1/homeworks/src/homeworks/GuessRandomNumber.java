@@ -38,7 +38,7 @@ public class GuessRandomNumber {
         if(input == this.randomNumber) {
             this.guestState = true;
             return "Congrats!, you've guessed the number in " +
-                    this.getTimes() + "times!";
+                    this.getTimes() + " times!";
         }
         else if(input < this.randomNumber)
             return "The number " + input + " is lower than!";
