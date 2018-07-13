@@ -6,11 +6,11 @@ import java.util.Random;
  */
 public class GuessRandomNumber {
     private int randomNumber;
-    private boolean guestState;
+    private boolean state;
     private int times;
     
     GuessRandomNumber() {
-        this.guestState = false;
+        this.state = false;
         Random random = new Random();
         this.randomNumber = random.nextInt(100) + 1;
         this.times = 0;
@@ -36,7 +36,7 @@ public class GuessRandomNumber {
 
         setTimes(++this.times);
         if(input == this.randomNumber) {
-            this.guestState = true;
+            this.state = true;
             return "Congrats!, you've guessed the number in " +
                     this.getTimes() + " times!";
         }
@@ -47,7 +47,7 @@ public class GuessRandomNumber {
     }
     
     public boolean isGuessed() {
-        return this.guestState;
+        return this.state;
     }
     
 }
