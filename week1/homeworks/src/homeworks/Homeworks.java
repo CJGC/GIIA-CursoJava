@@ -10,7 +10,8 @@ public class Homeworks {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        NumbersWithout2and5 numbersWithout2and5 = new NumbersWithout2and5(1,100);
+        NumbersWithoutEnding2and5 numbersWithout2and5 = 
+                new NumbersWithoutEnding2and5(1,100);
         EvenNumbers evenNumbers = new EvenNumbers(1539,2505);
         
         // ------ homework 1 ------
