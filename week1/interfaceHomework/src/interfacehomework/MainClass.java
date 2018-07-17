@@ -14,12 +14,17 @@ public class MainClass {
      */
     public static void main(String[] args) throws InterruptedException {
         Random random = new Random();
-        int randomNumber = random.nextInt(1) + 0;
+        int randomNumber = random.nextInt(2) + 1;
         Time time1, time2;
         
-        if (randomNumber == 0) {
+        if (randomNumber == 2) {
+            randomNumber = random.nextInt(2) + 1;
+            if(randomNumber == 2){
+                randomNumber = 0;
+            }
+            
             time1 = new Time();
-            TimeUnit.SECONDS.sleep(random.nextInt(1) + 0);
+            TimeUnit.SECONDS.sleep(randomNumber);
             time2 = new Time();
         }
         else{
