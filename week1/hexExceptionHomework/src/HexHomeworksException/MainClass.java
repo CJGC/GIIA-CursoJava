@@ -30,7 +30,7 @@ public class MainClass {
         }
         
         System.out.println("The number " + args[0] + " in the decimal format"
-                + "is = " + Integer.parseInt(args[0],16));
+                + " is = " + Integer.parseInt(args[0],16));
     }
     
 }
