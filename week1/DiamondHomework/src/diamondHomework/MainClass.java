@@ -9,14 +9,14 @@ import java.io.IOException;
 public class MainClass {
 
     public static void printDiamond(int tiers, int tier) {
-        int lenghtLine = tiers + (tiers - 1);
-        int spaces = lenghtLine - ((2*tier)+1);
+        int lineLenght = tiers + (tiers - 1);
+        int spaces = lineLenght - ((2*tier)+1);
         int middleSpaces = spaces/2;
         String line = "";
         
         // ------------- building the line -------------
-        for(int i=0; i < lenghtLine; i++) {
-            if(i >= middleSpaces && i < (lenghtLine - middleSpaces) )
+        for(int i=0; i < lineLenght; i++) {
+            if(i >= middleSpaces && i < (lineLenght - middleSpaces) )
                 line += "*";
             else
                 line += " ";
