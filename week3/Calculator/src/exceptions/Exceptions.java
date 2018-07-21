@@ -8,19 +8,70 @@ import java.util.regex.Pattern;
  */
 public class Exceptions {
     
-    protected static Pattern decValuePattern = 
+    private final static Pattern decValuePattern = 
         Pattern.compile("\\-?[0-9]+(\\.[0-9]+)?$");
 
-    protected static Pattern binValuePattern = 
+    private final static Pattern binValuePattern = 
         Pattern.compile("^[0-1]+(\\.[0-1]+)?$");
     
-    protected static Pattern octValuePattern = 
+    private final static Pattern octValuePattern = 
         Pattern.compile("^[0-7]+(\\.[0-7]+)?$");    
     
-    protected static Pattern hexValuePattern = 
-        Pattern.compile("^[0-9ABCDEF]+\\.[0-9ABCDEF]+$");
-    
+    private final static Pattern hexValuePattern = 
+        Pattern.compile("^[0-9ABCDEF]+(\\.[0-9ABCDEF]+)?$");
+
     protected static Matcher matcher;
+    
+    public static void checkLastOperationValue(String value) {
+        if(value.equals("setANS") || value.equals("add") || 
+           value.equals("sub") || value.equals("mul") || value.equals("div"))
+            return;
+        throw new IllegalArgumentException("Invalid last operation value");
+    }
+    
+    public static String checkInputValue(String ANS,int base) {
+        switch(base) {
+            case 10:
+                if (checkDecAnsValue(ANS))
+                    ANS = "sintax error!";
+                break;
+            case 2:
+                if (checkBinAnsValue(ANS))
+                    ANS = "sintax error!";
+                break;
+            case 8:
+                if (checkOctAnsValue(ANS))
+                    ANS = "sintax error!";
+                break;
+            case 16:
+                if (checkHexAnsValue(ANS))
+                    ANS = "sintax error!";
+                break;
+            default:
+                checkBase(base);
+        }
+        return ANS;
+    }
+    
+    private static boolean checkDecAnsValue (String value) {
+        matcher = decValuePattern.matcher(value);
+        return !matcher.matches();
+    }
+    
+    private static boolean checkBinAnsValue (String value) {
+        matcher = binValuePattern.matcher(value);
+        return !matcher.matches();
+    }
+    
+    private static boolean checkOctAnsValue (String value) {
+        matcher = octValuePattern.matcher(value);
+        return !matcher.matches();
+    }
+    
+    private static boolean checkHexAnsValue (String value) {
+        matcher = hexValuePattern.matcher(value);
+        return !matcher.matches();
+    }
     
     public static void checkDecValue (String value) {
         matcher = decValuePattern.matcher(value);
