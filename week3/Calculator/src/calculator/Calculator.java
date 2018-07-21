@@ -1,12 +1,19 @@
 package calculator;
+
+import exceptions.Exceptions;
+
 /**
  *
  * @author cj
  */
-final class Calculator extends Converter {
+public class Calculator extends Converter {
     
     private double ANS;
-
+    
+    public Calculator() {
+        ANS = 0.0;
+    }
+    
     public double getANS() {
         return ANS;
     }
@@ -25,34 +32,34 @@ final class Calculator extends Converter {
     
     public String add(String value) {
         double finalValue = baseToDec(value);
-        ANS += finalValue;
-        return decToBase(Double.toString(ANS));
+        setANS(ANS + finalValue);
+        return decToBase(Double.toString(getANS()));
     }
     
     public String sub(String value) {
         double finalValue = baseToDec(value);
-        ANS -= finalValue;
-        return decToBase(Double.toString(ANS));
+        setANS(ANS - finalValue);
+        return decToBase(Double.toString(getANS()));
     }
     
     public String mul(String value) {
         double finalValue = baseToDec(value);
-        ANS *= finalValue;
-        return decToBase(Double.toString(ANS));
+        setANS(ANS * finalValue);
+        return decToBase(Double.toString(getANS()));
     }
 
     public String div(String value) {
         double finalValue = baseToDec(value);
         if (finalValue == 0)
             return "div by zero!";
-        ANS /= finalValue;
-        return decToBase(Double.toString(ANS));
+        setANS(ANS / finalValue);
+        return decToBase(Double.toString(getANS()));
     }
     
     public String inv() {
-        if (ANS == 0) 
+        if (getANS() == 0) 
             return "div by zero!";
-        ANS = 1/this.ANS;
-        return decToBase(Double.toString(ANS));
+        setANS(1 / ANS);
+        return decToBase(Double.toString(getANS()));
     }
 }
