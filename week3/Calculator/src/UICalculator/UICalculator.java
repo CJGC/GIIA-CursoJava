@@ -13,6 +13,7 @@ public class UICalculator extends javax.swing.JFrame {
 
     private final Calculator calculator;
     private final HashMap operatorsButtonsGroup;
+    private final HashMap numbersButtonsGroup;
     private String savedANS;
     private String lastOperation;
     private boolean equalPressed;
@@ -23,13 +24,33 @@ public class UICalculator extends javax.swing.JFrame {
         initComponents();
         calculator = new Calculator();
         savedANS = Double.toString(calculator.getANS());
-        
         operatorsButtonsGroup = new HashMap();
+        numbersButtonsGroup = new HashMap();
+        
         operatorsButtonsGroup.put("add",plusButton);
         operatorsButtonsGroup.put("sub",minusButton);
         operatorsButtonsGroup.put("mul",mulButton);
         operatorsButtonsGroup.put("div",divButton);
         operatorsButtonsGroup.put("inv",invButton);
+        
+        numbersButtonsGroup.put("1",num1Button);
+        numbersButtonsGroup.put("2",num2Button);
+        numbersButtonsGroup.put("3",num3Button);
+        numbersButtonsGroup.put("4",num4Button);
+        numbersButtonsGroup.put("5",num5Button);
+        numbersButtonsGroup.put("6",num6Button);
+        numbersButtonsGroup.put("7",num7Button);
+        numbersButtonsGroup.put("8",num8Button);
+        numbersButtonsGroup.put("9",num9Button);
+        numbersButtonsGroup.put("A",numAButton);
+        numbersButtonsGroup.put("B",numBButton);
+        numbersButtonsGroup.put("C",numCButton);
+        numbersButtonsGroup.put("D",numDButton);
+        numbersButtonsGroup.put("E",numEButton);
+        numbersButtonsGroup.put("F",numFButton);
+        
+        java.awt.event.ActionEvent fictionalEvt = null;
+        decButtonActionPerformed(fictionalEvt);
     }
 
     public String getSavedANS() {
@@ -86,6 +107,24 @@ public class UICalculator extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void enableAllNumbersButtons() {
+        numbersButtonsGroup.keySet().forEach((obj) -> {
+            String key = (String) obj;
+            javax.swing.JButton button = (javax.swing.JButton)
+                numbersButtonsGroup.get(key);
+            button.setEnabled(true);
+        });
+    }
+    
+    private void disableNumbersButtons(String[] numbersButtonsID) {
+        for(String numberButtonID : numbersButtonsID) {
+            javax.swing.JButton button = (javax.swing.JButton)
+                numbersButtonsGroup.get(numberButtonID);
+            button.setEnabled(false);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -328,16 +367,36 @@ public class UICalculator extends javax.swing.JFrame {
 
         buttonGroup.add(binButton);
         binButton.setText("bin");
+        binButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                binButtonActionPerformed(evt);
+            }
+        });
 
         buttonGroup.add(octButton);
         octButton.setText("oct");
+        octButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                octButtonActionPerformed(evt);
+            }
+        });
 
         buttonGroup.add(decButton);
         decButton.setSelected(true);
         decButton.setText("dec");
+        decButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decButtonActionPerformed(evt);
+            }
+        });
 
         buttonGroup.add(hexButton);
         hexButton.setText("hex");
+        hexButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hexButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -486,7 +545,6 @@ public class UICalculator extends javax.swing.JFrame {
 
     private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
         jTextField.setText("0");
-        calculator.setANS(0.0);
         setLastOperation("setANS");
         setEqualPressed(false);
     }//GEN-LAST:event_acButtonActionPerformed
@@ -618,6 +676,36 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText(Double.toString(calculator.getANS()));
     }//GEN-LAST:event_ansButtonActionPerformed
 
+    private void binButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binButtonActionPerformed
+        calculator.setBase(2);
+        enableAllNumbersButtons();
+        jTextField.setText("0");
+        String []numbersButtonsID = {"2","3","4","5","6","7","8","9","A","B",
+            "C","D","E","F"};
+        disableNumbersButtons(numbersButtonsID);
+    }//GEN-LAST:event_binButtonActionPerformed
+
+    private void octButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_octButtonActionPerformed
+        calculator.setBase(8);
+        enableAllNumbersButtons();
+        jTextField.setText("0");
+        String []numbersButtonsID = {"8","9","A","B","C","D","E","F"};
+        disableNumbersButtons(numbersButtonsID);
+    }//GEN-LAST:event_octButtonActionPerformed
+
+    private void decButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decButtonActionPerformed
+        calculator.setBase(10);
+        enableAllNumbersButtons();
+        jTextField.setText("0");
+        String []numbersButtonsID = {"A","B","C","D","E","F"};
+        disableNumbersButtons(numbersButtonsID);
+    }//GEN-LAST:event_decButtonActionPerformed
+
+    private void hexButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexButtonActionPerformed
+        calculator.setBase(16);
+        enableAllNumbersButtons();
+        jTextField.setText("0");
+    }//GEN-LAST:event_hexButtonActionPerformed
     /**
      * @param args the command line arguments
      */
