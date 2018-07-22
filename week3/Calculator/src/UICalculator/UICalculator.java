@@ -12,6 +12,7 @@ public class UICalculator extends javax.swing.JFrame {
     Calculator calculator;
     String savedANS;
     private String lastOperation;
+    private boolean equalPressed;
     /**
      * Creates new form UICalculator
      */
@@ -36,7 +37,16 @@ public class UICalculator extends javax.swing.JFrame {
     public void setLastOperation(String lastOperation) {
         Exceptions.checkLastOperationValue(lastOperation);
         this.lastOperation = lastOperation;
-    }    
+    }
+
+    public boolean getEqualPressed() {
+        return equalPressed;
+    }
+
+    public void setEqualPressed(boolean equalPressed) {
+        this.equalPressed = equalPressed;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,7 +58,7 @@ public class UICalculator extends javax.swing.JFrame {
 
         buttonGroup = new javax.swing.ButtonGroup();
         jTextField = new javax.swing.JTextField();
-        ccButton = new javax.swing.JButton();
+        acButton = new javax.swing.JButton();
         arrowButton = new javax.swing.JButton();
         num7Button = new javax.swing.JButton();
         num8Button = new javax.swing.JButton();
@@ -95,10 +105,10 @@ public class UICalculator extends javax.swing.JFrame {
             }
         });
 
-        ccButton.setText("CC");
-        ccButton.addActionListener(new java.awt.event.ActionListener() {
+        acButton.setText("AC");
+        acButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ccButtonActionPerformed(evt);
+                acButtonActionPerformed(evt);
             }
         });
 
@@ -288,7 +298,7 @@ public class UICalculator extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ccButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(acButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(arrowButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -370,7 +380,7 @@ public class UICalculator extends javax.swing.JFrame {
                 .addComponent(jTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ccButton)
+                    .addComponent(acButton)
                     .addComponent(arrowButton))
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -425,13 +435,28 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText(jTextField.getText() + jbutton.getText());
     }//GEN-LAST:event_numButtonsActionPerformed
 
-    private void ccButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ccButtonActionPerformed
+    private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
         jTextField.setText("");
         calculator.setANS(0.0);
         setLastOperation("setANS");
-    }//GEN-LAST:event_ccButtonActionPerformed
+        setEqualPressed(false);
+    }//GEN-LAST:event_acButtonActionPerformed
+    
+    private boolean wasEqualPressed() {
+        if(getEqualPressed()) {
+            setEqualPressed(false);
+            return true;
+        }
+        return false;
+    }
     
     private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
+        if(wasEqualPressed()) {
+            jTextField.setText("");
+            setLastOperation("add");
+            return;
+        }
+        
         String result = Exceptions.checkInputValue(jTextField.getText(),
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
@@ -444,6 +469,12 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_plusButtonActionPerformed
 
     private void minusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minusButtonActionPerformed
+        if(wasEqualPressed()) {
+            jTextField.setText("");
+            setLastOperation("sub");
+            return;
+        }
+        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
@@ -456,6 +487,12 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_minusButtonActionPerformed
 
     private void mulButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mulButtonActionPerformed
+        if(wasEqualPressed()) {
+            jTextField.setText("");
+            setLastOperation("mul");
+            return;
+        }
+        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
@@ -468,6 +505,12 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_mulButtonActionPerformed
 
     private void divButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_divButtonActionPerformed
+        if(wasEqualPressed()) {
+            jTextField.setText("");
+            setLastOperation("div");
+            return;
+        }
+        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
@@ -513,7 +556,7 @@ public class UICalculator extends javax.swing.JFrame {
                 jTextField.setText(getSavedANS());
                 break;
         }
-        
+        setEqualPressed(true);
     }//GEN-LAST:event_equalButtonActionPerformed
 
     /**
@@ -552,11 +595,11 @@ public class UICalculator extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acButton;
     private javax.swing.JButton ansButton;
     private javax.swing.JButton arrowButton;
     private javax.swing.JRadioButton binButton;
     private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JButton ccButton;
     private javax.swing.JRadioButton decButton;
     private javax.swing.JButton divButton;
     private javax.swing.JButton dotButton;
