@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import calculator.Calculator;
 import exceptions.Exceptions;
 import java.util.HashMap;
-import java.util.Map;
 /**
  *
  * @author cj
@@ -26,6 +25,7 @@ public class UICalculator extends javax.swing.JFrame {
         savedANS = Double.toString(calculator.getANS());
         operatorsButtonsGroup = new HashMap();
         numbersButtonsGroup = new HashMap();
+        lastOperation = "setANS";
         
         operatorsButtonsGroup.put("add",plusButton);
         operatorsButtonsGroup.put("sub",minusButton);
@@ -550,16 +550,11 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_acButtonActionPerformed
    
     private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
-        if(wasEqualPressed()) {
-            jTextField.setText("");
-            setLastOperation("add");
-            return;
-        }
-        
         String result = Exceptions.checkInputValue(jTextField.getText(),
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
-            setSavedANS(calculator.add(jTextField.getText()));
+            if(!wasEqualPressed())
+                setSavedANS(calculator.add(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("add");
             disableAllOperatorsButtonsExcept("add");
@@ -569,17 +564,11 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_plusButtonActionPerformed
 
     private void minusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minusButtonActionPerformed
-        if(wasEqualPressed()) {
-            jTextField.setText("");
-            setLastOperation("sub");
-            disableAllOperatorsButtonsExcept("sub");
-            return;
-        }
-        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
-            setSavedANS(calculator.sub(jTextField.getText()));
+            if(!wasEqualPressed())
+                setSavedANS(calculator.sub(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("sub");
             disableAllOperatorsButtonsExcept("sub");
@@ -589,17 +578,11 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_minusButtonActionPerformed
 
     private void mulButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mulButtonActionPerformed
-        if(wasEqualPressed()) {
-            jTextField.setText("");
-            setLastOperation("mul");
-            disableAllOperatorsButtonsExcept("mul");
-            return;
-        }
-        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
-            setSavedANS(calculator.mul(jTextField.getText()));
+            if(!wasEqualPressed())
+                setSavedANS(calculator.mul(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("mul");
             disableAllOperatorsButtonsExcept("mul");
@@ -609,17 +592,11 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_mulButtonActionPerformed
 
     private void divButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_divButtonActionPerformed
-        if(wasEqualPressed()) {
-            jTextField.setText("");
-            setLastOperation("div");
-            disableAllOperatorsButtonsExcept("div");
-            return;
-        }
-        
         String result = Exceptions.checkInputValue(jTextField.getText(), 
                 calculator.getBase());
         if(result.equals(jTextField.getText())) {
-            setSavedANS(calculator.div(jTextField.getText()));
+            if(!wasEqualPressed())
+                setSavedANS(calculator.div(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("div");
             disableAllOperatorsButtonsExcept("div");
@@ -632,37 +609,44 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText(calculator.inv());
     }//GEN-LAST:event_invButtonActionPerformed
 
+    private void doEqualButtonAction() {
+        String result = Exceptions.checkInputValue(jTextField.getText(),
+        calculator.getBase());
+        if(result.equals(jTextField.getText())) {
+            calculator.setANS(Double.parseDouble(jTextField.getText()));
+            jTextField.setText(Double.toString(calculator.getANS()));
+            setLastOperation("setANS");
+        }
+        else
+            jTextField.setText(result);
+    }
+    
     private void equalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_equalButtonActionPerformed
         switch(getLastOperation()) {
             case "setANS":
-                String result = Exceptions.checkInputValue(jTextField.getText(),
-                        calculator.getBase());
-                if(result.equals(jTextField.getText())) {
-                    calculator.setANS(Double.parseDouble(jTextField.getText()));
-                    jTextField.setText(Double.toString(calculator.getANS()));
-                    setLastOperation("setANS");
-                }
-                else
-                    jTextField.setText(result);
+                doEqualButtonAction();
                 break;
             case "add":
                 plusButtonActionPerformed(evt);
                 jTextField.setText(getSavedANS());
+                enableAllOperatorsButtonsExcept(getLastOperation());
                 break;
             case "sub":
                 minusButtonActionPerformed(evt);
                 jTextField.setText(getSavedANS());
+                enableAllOperatorsButtonsExcept(getLastOperation());
                 break;
             case "mul":
                 mulButtonActionPerformed(evt);
                 jTextField.setText(getSavedANS());
+                enableAllOperatorsButtonsExcept(getLastOperation());
                 break;
             case "div":
                 divButtonActionPerformed(evt);
                 jTextField.setText(getSavedANS());
+                enableAllOperatorsButtonsExcept(getLastOperation());
                 break;
         }
-        enableAllOperatorsButtonsExcept(getLastOperation());
         setEqualPressed(true);
     }//GEN-LAST:event_equalButtonActionPerformed
 
