@@ -152,6 +152,11 @@ public class UICalculator extends javax.swing.JFrame {
         });
 
         arrowButton.setText("<-");
+        arrowButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                arrowButtonActionPerformed(evt);
+            }
+        });
 
         num7Button.setText("7");
         num7Button.addActionListener(new java.awt.event.ActionListener() {
@@ -273,6 +278,11 @@ public class UICalculator extends javax.swing.JFrame {
         });
 
         ansButton.setText("ANS");
+        ansButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ansButtonActionPerformed(evt);
+            }
+        });
 
         equalButton.setText("=");
         equalButton.addActionListener(new java.awt.event.ActionListener() {
@@ -475,7 +485,7 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_numButtonsActionPerformed
 
     private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
-        jTextField.setText("");
+        jTextField.setText("0");
         calculator.setANS(0.0);
         setLastOperation("setANS");
         setEqualPressed(false);
@@ -597,6 +607,16 @@ public class UICalculator extends javax.swing.JFrame {
         enableAllOperatorsButtonsExcept(getLastOperation());
         setEqualPressed(true);
     }//GEN-LAST:event_equalButtonActionPerformed
+
+    private void arrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arrowButtonActionPerformed
+        String textField = jTextField.getText();
+        if(textField.length() > 1)
+            jTextField.setText(textField.substring(0, textField.length()-1));
+    }//GEN-LAST:event_arrowButtonActionPerformed
+
+    private void ansButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ansButtonActionPerformed
+        jTextField.setText(Double.toString(calculator.getANS()));
+    }//GEN-LAST:event_ansButtonActionPerformed
 
     /**
      * @param args the command line arguments
