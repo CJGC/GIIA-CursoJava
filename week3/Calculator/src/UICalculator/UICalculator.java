@@ -3,14 +3,17 @@ package UICalculator;
 import javax.swing.JButton;
 import calculator.Calculator;
 import exceptions.Exceptions;
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author cj
  */
 public class UICalculator extends javax.swing.JFrame {
 
-    Calculator calculator;
-    String savedANS;
+    private final Calculator calculator;
+    private final HashMap operatorsButtonsGroup;
+    private String savedANS;
     private String lastOperation;
     private boolean equalPressed;
     /**
@@ -20,6 +23,13 @@ public class UICalculator extends javax.swing.JFrame {
         initComponents();
         calculator = new Calculator();
         savedANS = Double.toString(calculator.getANS());
+        
+        operatorsButtonsGroup = new HashMap();
+        operatorsButtonsGroup.put("add",plusButton);
+        operatorsButtonsGroup.put("sub",minusButton);
+        operatorsButtonsGroup.put("mul",mulButton);
+        operatorsButtonsGroup.put("div",divButton);
+        operatorsButtonsGroup.put("inv",invButton);
     }
 
     public String getSavedANS() {
@@ -47,6 +57,35 @@ public class UICalculator extends javax.swing.JFrame {
         this.equalPressed = equalPressed;
     }
     
+    private boolean wasEqualPressed() {
+        if(getEqualPressed()) {
+            setEqualPressed(false);
+            return true;
+        }
+        return false;
+    }
+    
+    private void disableAllOperatorsButtonsExcept(String operator) {
+        operatorsButtonsGroup.keySet().forEach((obj) -> {
+            String key = (String) obj;
+            if(key != operator) {
+                javax.swing.JButton button = (javax.swing.JButton) 
+                        operatorsButtonsGroup.get(key);
+                button.setEnabled(false);
+            }
+        });
+    }
+    
+    private void enableAllOperatorsButtonsExcept(String operator) {
+        operatorsButtonsGroup.keySet().forEach((obj) -> {
+            String key = (String) obj;
+            if(key != operator) {
+                javax.swing.JButton button = (javax.swing.JButton) 
+                        operatorsButtonsGroup.get(key);
+                button.setEnabled(true);
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -441,15 +480,7 @@ public class UICalculator extends javax.swing.JFrame {
         setLastOperation("setANS");
         setEqualPressed(false);
     }//GEN-LAST:event_acButtonActionPerformed
-    
-    private boolean wasEqualPressed() {
-        if(getEqualPressed()) {
-            setEqualPressed(false);
-            return true;
-        }
-        return false;
-    }
-    
+   
     private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
         if(wasEqualPressed()) {
             jTextField.setText("");
@@ -463,6 +494,7 @@ public class UICalculator extends javax.swing.JFrame {
             setSavedANS(calculator.add(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("add");
+            disableAllOperatorsButtonsExcept("add");
         }
         else
             jTextField.setText(result);
@@ -472,6 +504,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(wasEqualPressed()) {
             jTextField.setText("");
             setLastOperation("sub");
+            disableAllOperatorsButtonsExcept("sub");
             return;
         }
         
@@ -481,6 +514,7 @@ public class UICalculator extends javax.swing.JFrame {
             setSavedANS(calculator.sub(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("sub");
+            disableAllOperatorsButtonsExcept("sub");
         }
         else
             jTextField.setText(result);
@@ -490,6 +524,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(wasEqualPressed()) {
             jTextField.setText("");
             setLastOperation("mul");
+            disableAllOperatorsButtonsExcept("mul");
             return;
         }
         
@@ -499,6 +534,7 @@ public class UICalculator extends javax.swing.JFrame {
             setSavedANS(calculator.mul(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("mul");
+            disableAllOperatorsButtonsExcept("mul");
         }
         else
             jTextField.setText(result);
@@ -508,6 +544,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(wasEqualPressed()) {
             jTextField.setText("");
             setLastOperation("div");
+            disableAllOperatorsButtonsExcept("div");
             return;
         }
         
@@ -517,6 +554,7 @@ public class UICalculator extends javax.swing.JFrame {
             setSavedANS(calculator.div(jTextField.getText()));
             jTextField.setText("");
             setLastOperation("div");
+            disableAllOperatorsButtonsExcept("div");
         }
         else
             jTextField.setText(result);
@@ -556,6 +594,7 @@ public class UICalculator extends javax.swing.JFrame {
                 jTextField.setText(getSavedANS());
                 break;
         }
+        enableAllOperatorsButtonsExcept(getLastOperation());
         setEqualPressed(true);
     }//GEN-LAST:event_equalButtonActionPerformed
 
