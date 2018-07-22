@@ -220,6 +220,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt;-"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="arrowButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="num7Button">
       <Properties>
@@ -361,6 +364,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="ANS"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ansButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="equalButton">
       <Properties>
