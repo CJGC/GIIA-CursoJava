@@ -1,7 +1,4 @@
 package calculator;
-
-import exceptions.Exceptions;
-
 /**
  *
  * @author cj
@@ -18,14 +15,18 @@ public class Calculator extends Converter {
         return ANS;
     }
 
+    public String getANSinStringFormat() {
+        return decToBase(Double.toString(ANS));
+    }
+    
     public void setANS(double ANS) {
         this.ANS = ANS;
     }
-
+    
     public int getBase() {
         return base;
     }
-
+    
     public void setBase(int base) {
         this.base = base;
     }
