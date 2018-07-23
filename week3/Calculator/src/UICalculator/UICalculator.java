@@ -312,7 +312,7 @@ public class UICalculator extends javax.swing.JFrame {
         dotButton.setText(".");
         dotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numButtonsActionPerformed(evt);
+                dotButtonActionPerformed(evt);
             }
         });
 
@@ -540,7 +540,11 @@ public class UICalculator extends javax.swing.JFrame {
 
     private void numButtonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numButtonsActionPerformed
         JButton jbutton = (JButton) evt.getSource();
-        jTextField.setText(jTextField.getText() + jbutton.getText());
+        String textField = jTextField.getText();
+        if(textField.charAt(0) == '0' && textField.length() == 1)
+            jTextField.setText(jbutton.getText());
+        else
+            jTextField.setText(textField + jbutton.getText());
     }//GEN-LAST:event_numButtonsActionPerformed
 
     private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
@@ -555,7 +559,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(result.equals(jTextField.getText())) {
             if(!wasEqualPressed())
                 setSavedANS(calculator.add(jTextField.getText()));
-            jTextField.setText("");
+            jTextField.setText("0");
             setLastOperation("add");
             disableAllOperatorsButtonsExcept("add");
         }
@@ -569,7 +573,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(result.equals(jTextField.getText())) {
             if(!wasEqualPressed())
                 setSavedANS(calculator.sub(jTextField.getText()));
-            jTextField.setText("");
+            jTextField.setText("0");
             setLastOperation("sub");
             disableAllOperatorsButtonsExcept("sub");
         }
@@ -583,7 +587,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(result.equals(jTextField.getText())) {
             if(!wasEqualPressed())
                 setSavedANS(calculator.mul(jTextField.getText()));
-            jTextField.setText("");
+            jTextField.setText("0");
             setLastOperation("mul");
             disableAllOperatorsButtonsExcept("mul");
         }
@@ -597,7 +601,7 @@ public class UICalculator extends javax.swing.JFrame {
         if(result.equals(jTextField.getText())) {
             if(!wasEqualPressed())
                 setSavedANS(calculator.div(jTextField.getText()));
-            jTextField.setText("");
+            jTextField.setText("0");
             setLastOperation("div");
             disableAllOperatorsButtonsExcept("div");
         }
@@ -653,7 +657,9 @@ public class UICalculator extends javax.swing.JFrame {
     private void arrowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arrowButtonActionPerformed
         String textField = jTextField.getText();
         if(textField.length() > 1)
-            jTextField.setText(textField.substring(0, textField.length()-1));
+            jTextField.setText(textField.substring(0,textField.length()-1));
+        else if(textField.charAt(0) != '0')
+            jTextField.setText("0");
     }//GEN-LAST:event_arrowButtonActionPerformed
 
     private void ansButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ansButtonActionPerformed
@@ -690,6 +696,11 @@ public class UICalculator extends javax.swing.JFrame {
         enableAllNumbersButtons();
         jTextField.setText("0");
     }//GEN-LAST:event_hexButtonActionPerformed
+
+    private void dotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dotButtonActionPerformed
+        JButton jbutton = (JButton) evt.getSource();
+        jTextField.setText(jTextField.getText() + jbutton.getText());
+    }//GEN-LAST:event_dotButtonActionPerformed
     /**
      * @param args the command line arguments
      */
