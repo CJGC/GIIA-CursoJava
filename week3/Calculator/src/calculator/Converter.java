@@ -47,13 +47,19 @@ public class Converter {
         switch (base) {
             case 2:
                 finalNumber += Integer.toBinaryString(intePart) + ".";
+                break;
             case 8:
                 finalNumber += Integer.toOctalString(intePart) + ".";
+                break;
             case 16:
                 finalNumber += Integer.toHexString(intePart) + ".";
+                break;
         }
         
         // ------- double part conversion -------
+        if(doubPart == 0)
+            return finalNumber + "0";
+        
         List<Double> values;
         values = new ArrayList<>();
         
@@ -75,21 +81,18 @@ public class Converter {
     
     public String decToBase(String value) {
         Exceptions.checkBase(base);
-        
+        Exceptions.checkDecValue(value);
         switch (this.base) {            
             case 10:
-                Exceptions.checkDecValue(value);
                 return value;
             case 2:
-                Exceptions.checkBinValue(value);
                 return conv(value,2);
             case 8:
-                Exceptions.checkOctValue(value);
                 return conv(value,8);
             case 16:
-                Exceptions.checkHexValue(value);
                 return conv(value,16);
             default:
+                Exceptions.checkBase(base);
                 return "";
         }
     }
