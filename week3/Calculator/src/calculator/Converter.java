@@ -52,7 +52,7 @@ public class Converter {
                 finalNumber += Integer.toOctalString(intePart) + ".";
                 break;
             case 16:
-                finalNumber += Integer.toHexString(intePart) + ".";
+                finalNumber += Integer.toHexString(intePart).toUpperCase()+ ".";
                 break;
         }
         
@@ -136,7 +136,9 @@ public class Converter {
         
         String[] number = value.split("\\.");
         String intePart = number[0];
-        String doubPart = number[1];
+        String doubPart = "0";
+        if(number.length > 1)
+            doubPart = number[1];
         double finalNumber = 0.0;
         
         // ------ integer part conversion ------
