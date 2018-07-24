@@ -4,6 +4,7 @@ import javax.swing.JButton;
 import calculator.Calculator;
 import exceptions.Exceptions;
 import java.util.HashMap;
+import limits.Limits;
 /**
  *
  * @author cj
@@ -28,8 +29,8 @@ public class UICalculator extends javax.swing.JFrame {
         operatorsButtonsGroup = new HashMap();
         numbersButtonsGroup = new HashMap();
         baseButtonsGroup = new HashMap();
-        lastOperation = "setANS";
-        displayLength = 14;
+        lastOperation = "assignment";
+        displayLength = Limits.displayLenght;
         
         operatorsButtonsGroup.put("add",plusButton);
         operatorsButtonsGroup.put("sub",minusButton);
@@ -586,7 +587,7 @@ public class UICalculator extends javax.swing.JFrame {
 
     private void ccButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ccButtonActionPerformed
         jTextField.setText("0");
-        setLastOperation("setANS");
+        setLastOperation("assignment");
         setEqualPressed(false);
     }//GEN-LAST:event_ccButtonActionPerformed
     
@@ -653,20 +654,25 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_invButtonActionPerformed
 
     private void doEqualButtonAction() {
-        String result = Exceptions.checkSyntaxInputValue(jTextField.getText(),
-        calculator.getBase());
-        if(result.equals(jTextField.getText())) {
-            calculator.setANS(Double.parseDouble(jTextField.getText()));
-            jTextField.setText(Double.toString(calculator.getANS()));
-            setLastOperation("setANS");
+        String result = calculator.trimInput(jTextField.getText());
+        if(result == "sintax error!" || result == "much int digits!") {
+            errorMessage(result);
+            return;
         }
-        else
-            jTextField.setText(result);
+        
+        result = Exceptions.checkSyntaxInputValue(result,calculator.getBase());
+        if(result == "sintax error!") {
+            errorMessage(result);
+            return;
+        }
+        calculator.assignment(result);
+        jTextField.setText(result);
+        setLastOperation("assignment");
     }
     
     private void equalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_equalButtonActionPerformed
         switch(getLastOperation()) {
-            case "setANS":
+            case "assignment":
                 doEqualButtonAction();
                 break;
             case "add":
