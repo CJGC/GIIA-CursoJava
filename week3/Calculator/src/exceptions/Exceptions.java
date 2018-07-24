@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class Exceptions {
     
     private final static Pattern decValuePattern = 
-        Pattern.compile("\\-?[0-9]+(\\.[0-9]+)?$");
+        Pattern.compile("^\\-?[0-9]+(\\.[0-9]+)?$");
 
     private final static Pattern binValuePattern = 
         Pattern.compile("^[0-1]+(\\.[0-1]+)?$");
@@ -29,7 +29,18 @@ public class Exceptions {
         throw new IllegalArgumentException("Invalid last operation value");
     }
     
-    public static String checkInputValue(String ANS,int base) {
+    public static boolean checkDotsOnNumber(String number) {
+        int dots = 0;
+        for(char ch : number.toCharArray()) {
+            if (ch == '.') 
+                dots++;
+            if (dots > 1)
+                return true;
+        }
+        return false;
+    }
+    
+    public static String checkSyntaxInputValue(String ANS,int base) {
         switch(base) {
             case 10:
                 if (checkDecAnsValue(ANS))
