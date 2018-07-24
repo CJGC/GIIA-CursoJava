@@ -13,6 +13,30 @@ public class Converter {
         base = 10;
     }
     
+    public String trimInput(String number) {
+        if(Exceptions.checkDotsOnNumber(number))
+            return "sintax error!";
+        
+        String[] splittedANS = number.split("\\.");
+        
+        // ------- integer part -------
+        if(splittedANS.length == 1) {
+            if(splittedANS[0].length() > 7)
+                return "much int digits!";
+            return number;
+        }
+        
+        String finalNumber = "";
+        
+        // ------- double part -------
+        String doubPart = "0." + splittedANS[1];
+        double doubNum = Double.parseDouble(doubPart);
+        doubNum = Math.floor(doubNum * 1e2) / 1e2;
+        double entireNumber = Integer.parseInt(splittedANS[0]) + doubNum;
+        finalNumber += entireNumber;
+        return finalNumber;
+    }
+    
     private String hexRules(int number) {
         if(number < 10)
             return Integer.toString(number);
