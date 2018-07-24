@@ -16,7 +16,13 @@ public class Calculator extends Converter {
     }
 
     public String getANSinStringFormat() {
-        return decToBase(Double.toString(ANS));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
     }
     
     public void setANS(double ANS) {
@@ -34,19 +40,37 @@ public class Calculator extends Converter {
     public String add(String value) {
         double finalValue = baseToDec(value);
         setANS(ANS + finalValue);
-        return decToBase(Double.toString(getANS()));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
     }
     
     public String sub(String value) {
         double finalValue = baseToDec(value);
         setANS(ANS - finalValue);
-        return decToBase(Double.toString(getANS()));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
     }
     
     public String mul(String value) {
         double finalValue = baseToDec(value);
         setANS(ANS * finalValue);
-        return decToBase(Double.toString(getANS()));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
     }
 
     public String div(String value) {
@@ -54,13 +78,29 @@ public class Calculator extends Converter {
         if (finalValue == 0)
             return "div by zero!";
         setANS(ANS / finalValue);
-        return decToBase(Double.toString(getANS()));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
     }
     
     public String inv() {
         if (getANS() == 0) 
             return "div by zero!";
         setANS(1 / ANS);
-        return decToBase(Double.toString(getANS()));
+        String output = trimOutput(getANS());
+        if(output == "Max val reached!") {
+            setANS(0.0);
+            return output;
+        }
+        setANS(Double.parseDouble(output));
+        return decToBase(output);
+    }
+    
+    public void assignment(String value) {
+        setANS(baseToDec(value));
     }
 }
