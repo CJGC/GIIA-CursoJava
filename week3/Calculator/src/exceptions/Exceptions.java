@@ -23,7 +23,7 @@ public class Exceptions {
     protected static Matcher matcher;
     
     public static void checkLastOperationValue(String value) {
-        if(value.equals("setANS") || value.equals("add") || 
+        if(value.equals("assignment") || value.equals("add") || 
            value.equals("sub") || value.equals("mul") || value.equals("div"))
             return;
         throw new IllegalArgumentException("Invalid last operation value");
