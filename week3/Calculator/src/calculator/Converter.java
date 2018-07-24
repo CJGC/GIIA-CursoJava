@@ -2,6 +2,7 @@ package calculator;
 import exceptions.Exceptions;
 import java.util.ArrayList;
 import java.util.List;
+import limits.Limits;
 /**
  *
  * @author cj
@@ -17,24 +18,56 @@ public class Converter {
         if(Exceptions.checkDotsOnNumber(number))
             return "sintax error!";
         
-        String[] splittedANS = number.split("\\.");
-        
+        String[] splittedNumber = number.split("\\.");
+        String intePart = splittedNumber[0];
         // ------- integer part -------
-        if(splittedANS.length == 1) {
-            if(splittedANS[0].length() > 7)
+        if(splittedNumber.length == 1) {
+            if(intePart.length() > Limits.maxIntDigits)
                 return "much int digits!";
             return number;
         }
         
-        String finalNumber = "";
-        
         // ------- double part -------
-        String doubPart = "0." + splittedANS[1];
-        double doubNum = Double.parseDouble(doubPart);
-        doubNum = Math.floor(doubNum * 1e2) / 1e2;
-        double entireNumber = Integer.parseInt(splittedANS[0]) + doubNum;
-        finalNumber += entireNumber;
-        return finalNumber;
+        String doubPart = splittedNumber[1];
+        if(doubPart.length() > Limits.maxDoubleDigits)
+            doubPart = "." + doubPart.substring(0,Limits.maxDoubleDigits);
+        
+        return (intePart + doubPart);
+    }
+    
+    private double round(double number) {
+        double maxDigits = Limits.maxDoubleDigits;
+        double newNumber = 
+            Math.floor(number * Math.pow(10,maxDigits))/Math.pow(10,maxDigits);
+        return newNumber;
+    }
+    
+    protected String trimOutput(double number) {
+        int maximumValueAllowed = 0;
+        switch(base) {
+            case 10:
+                maximumValueAllowed = Limits.maxDecValueAllowed;
+                break;
+            case 2:
+                maximumValueAllowed = Limits.maxBinValueAllowed;
+                break;
+            case 8:
+                maximumValueAllowed = Limits.maxOctValueAllowed;
+                break;
+            case 16:
+                maximumValueAllowed = Limits.maxHexValueAllowed;
+                break;
+            default:
+                Exceptions.checkBase(base);
+                break;
+        }
+
+        if(number > maximumValueAllowed)
+            return "Max val reached!";
+        
+        number = round(number);
+        
+        return Double.toString(number);
     }
     
     private String hexRules(int number) {
@@ -87,7 +120,9 @@ public class Converter {
         List<Double> values;
         values = new ArrayList<>();
         
-        while (!(values.contains(doubPart)) && doubPart != 0.00) {
+        int doubleDigits = 0;
+        while (!(values.contains(doubPart)) && doubPart != 0.00 && 
+                doubleDigits < Limits.maxDoubleDigits) {
             values.add(doubPart);
             doubPart *= base;
             intePart = (int) (Math.floor(doubPart * 1e0) / 1e0);
@@ -98,12 +133,13 @@ public class Converter {
                 finalNumber += intePart;
             else
                 finalNumber += hexRules(intePart);
+            doubleDigits ++;
         }
         
         return finalNumber;        
     }
     
-    public String decToBase(String value) {
+    protected String decToBase(String value) {
         Exceptions.checkBase(base);
         Exceptions.checkDecValue(value);
         switch (this.base) {            
@@ -140,7 +176,7 @@ public class Converter {
         }
     }
     
-    public double baseToDec(String value) {
+    protected double baseToDec(String value) {
         Exceptions.checkBase(this.base);
         
         switch (this.base) {
