@@ -712,7 +712,8 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_arrowButtonActionPerformed
 
     private void ansButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ansButtonActionPerformed
-        jTextField.setText(calculator.getANSinStringFormat());
+        String message = calculator.getANSinStringFormat();
+        jTextField.setText(message);
     }//GEN-LAST:event_ansButtonActionPerformed
 
     private void binButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binButtonActionPerformed
