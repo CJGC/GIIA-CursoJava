@@ -15,6 +15,7 @@ public class UICalculator extends javax.swing.JFrame {
     private final HashMap operatorsButtonsGroup;
     private final HashMap numbersButtonsGroup;
     private final HashMap baseButtonsGroup;
+    private final HashMap leftoverButtonsGroup;
     private String savedANS;
     private String lastOperation;
     private final int displayLength;
@@ -29,6 +30,7 @@ public class UICalculator extends javax.swing.JFrame {
         operatorsButtonsGroup = new HashMap();
         numbersButtonsGroup = new HashMap();
         baseButtonsGroup = new HashMap();
+        leftoverButtonsGroup = new HashMap();
         lastOperation = "assignment";
         displayLength = Limits.displayLenght;
         
@@ -38,6 +40,7 @@ public class UICalculator extends javax.swing.JFrame {
         operatorsButtonsGroup.put("div",divButton);
         operatorsButtonsGroup.put("inv",invButton);
         
+        numbersButtonsGroup.put("0",num0Button);
         numbersButtonsGroup.put("1",num1Button);
         numbersButtonsGroup.put("2",num2Button);
         numbersButtonsGroup.put("3",num3Button);
@@ -58,6 +61,12 @@ public class UICalculator extends javax.swing.JFrame {
         baseButtonsGroup.put("bin",binButton);
         baseButtonsGroup.put("oct",octButton);
         baseButtonsGroup.put("hex",hexButton);
+        
+        leftoverButtonsGroup.put("ac",acButton);
+        leftoverButtonsGroup.put("arrow",arrowButton);
+        leftoverButtonsGroup.put("dot",dotButton);
+        leftoverButtonsGroup.put("ans",ansButton);
+        leftoverButtonsGroup.put("equal",equalButton);
         
         java.awt.event.ActionEvent fictionalEvt = null;
         decButtonActionPerformed(fictionalEvt);
@@ -96,28 +105,6 @@ public class UICalculator extends javax.swing.JFrame {
         return false;
     }
     
-    private void disableAllOperatorsButtonsExcept(String operator) {
-        operatorsButtonsGroup.keySet().forEach((obj) -> {
-            String key = (String) obj;
-            if(key != operator) {
-                javax.swing.JButton button = (javax.swing.JButton) 
-                        operatorsButtonsGroup.get(key);
-                button.setEnabled(false);
-            }
-        });
-    }
-    
-    private void enableAllOperatorsButtonsExcept(String operator) {
-        operatorsButtonsGroup.keySet().forEach((obj) -> {
-            String key = (String) obj;
-            if(key != operator) {
-                javax.swing.JButton button = (javax.swing.JButton) 
-                        operatorsButtonsGroup.get(key);
-                button.setEnabled(true);
-            }
-        });
-    }
-    
     private void enableAllNumbersButtons() {
         numbersButtonsGroup.keySet().forEach((obj) -> {
             String key = (String) obj;
@@ -135,22 +122,60 @@ public class UICalculator extends javax.swing.JFrame {
         }
     }
     
-    private void enableAllBaseButtons() {
+    private void performAllOperatorsButtonsActionExcept
+                    (String operator, String action) {
+        
+        Exceptions.checkButtonsAction(action);
+        boolean act;
+        act = action == "enable";
+        operatorsButtonsGroup.keySet().forEach((obj) -> {
+            String key = (String) obj;
+            if(key != operator) {
+                javax.swing.JButton button = (javax.swing.JButton) 
+                        operatorsButtonsGroup.get(key);
+                button.setEnabled(act);
+            }
+        });
+    }
+
+    private void performAllBaseButtonsAction(String action) {
+        Exceptions.checkButtonsAction(action);
+        boolean act;
+        act = action == "enable";
         baseButtonsGroup.keySet().forEach((obj) -> {
             String key = (String) obj;
             javax.swing.JRadioButton button = (javax.swing.JRadioButton)
                 baseButtonsGroup.get(key);
-            button.setEnabled(true);
+            button.setEnabled(act);
+        });
+    }
+
+    private void performAllLeftoverButtonsAction(String action) {
+        Exceptions.checkButtonsAction(action);
+        boolean act;
+        act = action == "enable";
+        leftoverButtonsGroup.keySet().forEach((obj) -> {
+            String key = (String) obj;
+            javax.swing.JButton button = (javax.swing.JButton)
+                leftoverButtonsGroup.get(key);
+            button.setEnabled(act);
         });
     }
     
-    private void disableAllBaseButtons() {
-        baseButtonsGroup.keySet().forEach((obj) -> {
-            String key = (String) obj;
-            javax.swing.JRadioButton button = (javax.swing.JRadioButton)
-                baseButtonsGroup.get(key);
-            button.setEnabled(false);
-        });
+    private void enableAllButtons() {
+        performAllOperatorsButtonsActionExcept("","enable");
+        enableAllNumbersButtons();
+        performAllBaseButtonsAction("enable");
+        performAllLeftoverButtonsAction("enable");
+    }
+    
+    private void disableAllButtons() {
+        performAllOperatorsButtonsActionExcept("","disable");
+        String[] numbersButtonsID = {"0","1","2","3","4","5","6","7","8","9",
+                                     "A","B","C","D","E","F"};
+        disableNumbersButtons(numbersButtonsID);
+        performAllBaseButtonsAction("disable");
+        performAllLeftoverButtonsAction("disable");        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -589,6 +614,23 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText("0");
         setLastOperation("assignment");
         setEqualPressed(false);
+        enableAllButtons();
+        switch (calculator.getBase()) {
+            case 10:
+                decButtonActionPerformed(null);
+                break;
+            case 2:
+                binButtonActionPerformed(null);
+                break;
+            case 8:
+                octButtonActionPerformed(null);
+                break;
+            case 16:
+                hexButtonActionPerformed(null);
+                break;
+            default:
+                Exceptions.checkBase(calculator.getBase());
+        }
     }//GEN-LAST:event_ccButtonActionPerformed
     
     private void performOperatorAction(String operator) {
@@ -613,24 +655,29 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText(message);
     }    
     
+    private boolean errorParser(String message) {
+        if(message == "sintax error!" || message == "much int digits!" || 
+            message == "div by zero!") {
+            errorMessage(message);
+            disableAllButtons();
+            return true;
+        }
+        return false;
+    }
+    
     private void operatorsActions(String operator) {
         String result = calculator.trimInput(jTextField.getText());
-        if(result == "sintax error!" || result == "much int digits!") {
-            errorMessage(result);
-            return;
-        }
-        
+        if (errorParser(result) ) return;
         result = Exceptions.checkSyntaxInputValue(result,calculator.getBase());
-        if(result == "sintax error!") {
-            errorMessage(result);
-            return;
+        if(errorParser(result)) return;
+        if(!wasEqualPressed()) {
+            performOperatorAction(operator);
+            if(errorParser(getSavedANS())) return;
         }
-        
-        if(!wasEqualPressed()) performOperatorAction(operator);
         jTextField.setText("0");
         setLastOperation(operator);
-        disableAllOperatorsButtonsExcept(operator);
-        disableAllBaseButtons();
+        performAllOperatorsButtonsActionExcept(operator,"disable");
+        performAllBaseButtonsAction("disable");
     }
     
     private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
@@ -650,21 +697,16 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_divButtonActionPerformed
 
     private void invButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invButtonActionPerformed
-        jTextField.setText(calculator.inv());
+        String message = calculator.inv();
+        if(errorParser(message)) return;
+        jTextField.setText(message);
     }//GEN-LAST:event_invButtonActionPerformed
 
     private void doEqualButtonAction() {
         String result = calculator.trimInput(jTextField.getText());
-        if(result == "sintax error!" || result == "much int digits!") {
-            errorMessage(result);
-            return;
-        }
-        
+        if(errorParser(result)) return;
         result = Exceptions.checkSyntaxInputValue(result,calculator.getBase());
-        if(result == "sintax error!") {
-            errorMessage(result);
-            return;
-        }
+        if(errorParser(result)) return;
         calculator.assignment(result);
         jTextField.setText(result);
         setLastOperation("assignment");
@@ -676,28 +718,28 @@ public class UICalculator extends javax.swing.JFrame {
                 doEqualButtonAction();
                 break;
             case "add":
-                plusButtonActionPerformed(evt);
+                plusButtonActionPerformed(null);
                 jTextField.setText(getSavedANS());
-                enableAllOperatorsButtonsExcept(getLastOperation());
-                enableAllBaseButtons();
+                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
+                performAllBaseButtonsAction("enable");
                 break;
             case "sub":
-                minusButtonActionPerformed(evt);
+                minusButtonActionPerformed(null);
                 jTextField.setText(getSavedANS());
-                enableAllOperatorsButtonsExcept(getLastOperation());
-                enableAllBaseButtons();
+                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
+                performAllBaseButtonsAction("enable");
                 break;
             case "mul":
-                mulButtonActionPerformed(evt);
+                mulButtonActionPerformed(null);
                 jTextField.setText(getSavedANS());
-                enableAllOperatorsButtonsExcept(getLastOperation());
-                enableAllBaseButtons();
+                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
+                performAllBaseButtonsAction("enable");
                 break;
             case "div":
-                divButtonActionPerformed(evt);
+                divButtonActionPerformed(null);
                 jTextField.setText(getSavedANS());
-                enableAllOperatorsButtonsExcept(getLastOperation());
-                enableAllBaseButtons();
+                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
+                performAllBaseButtonsAction("enable");
                 break;
         }
         setEqualPressed(true);
@@ -713,6 +755,7 @@ public class UICalculator extends javax.swing.JFrame {
 
     private void ansButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ansButtonActionPerformed
         String message = calculator.getANSinStringFormat();
+        if(errorParser(message)) return;
         jTextField.setText(message);
     }//GEN-LAST:event_ansButtonActionPerformed
 
