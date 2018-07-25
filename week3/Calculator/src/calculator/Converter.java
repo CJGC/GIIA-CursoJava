@@ -31,7 +31,8 @@ public class Converter {
         String doubPart = splittedNumber[1];
         if(doubPart.length() > Limits.maxDoubleDigits)
             doubPart = "." + doubPart.substring(0,Limits.maxDoubleDigits);
-        
+        else
+            doubPart = "." + doubPart;
         return (intePart + doubPart);
     }
     
