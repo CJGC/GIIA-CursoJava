@@ -16,22 +16,22 @@ public class UICalculator extends javax.swing.JFrame {
     private final HashMap numbersButtonsGroup;
     private final HashMap baseButtonsGroup;
     private final HashMap leftoverButtonsGroup;
-    private String savedANS;
     private String lastOperation;
     private final int displayLength;
     private boolean equalPressed;
+    private boolean error;
     /**
      * Creates new form UICalculator
      */
     public UICalculator() {
         initComponents();
         calculator = new Calculator();
-        savedANS = Double.toString(calculator.getANS());
         operatorsButtonsGroup = new HashMap();
         numbersButtonsGroup = new HashMap();
         baseButtonsGroup = new HashMap();
         leftoverButtonsGroup = new HashMap();
         lastOperation = "assignment";
+        error = false;
         displayLength = Limits.displayLenght;
         
         operatorsButtonsGroup.put("add",plusButton);
@@ -72,12 +72,12 @@ public class UICalculator extends javax.swing.JFrame {
         decButtonActionPerformed(fictionalEvt);
     }
 
-    public String getSavedANS() {
-        return savedANS;
+    public boolean hasOccurredAnError() {
+        return error;
     }
 
-    public void setSavedANS(String savedANS) {
-        this.savedANS = savedANS;
+    public void setError(boolean error) {
+        this.error = error;
     }
     
     public String getLastOperation() {
@@ -614,6 +614,7 @@ public class UICalculator extends javax.swing.JFrame {
         jTextField.setText("0");
         setLastOperation("assignment");
         setEqualPressed(false);
+        setError(false);
         enableAllButtons();
         switch (calculator.getBase()) {
             case 10:
@@ -633,25 +634,23 @@ public class UICalculator extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ccButtonActionPerformed
     
-    private void performOperatorAction(String operator) {
+    private String performOperatorAction(String operator) {
         switch(operator) {
         case "add":
-            setSavedANS(calculator.add(jTextField.getText()));
-            break;
+            return calculator.add(jTextField.getText());
         case "sub":
-            setSavedANS(calculator.sub(jTextField.getText()));
-            break;
+            return calculator.sub(jTextField.getText());
         case "mul":
-            setSavedANS(calculator.mul(jTextField.getText()));
-            break;
+            return calculator.mul(jTextField.getText());
         case "div":
-            setSavedANS(calculator.div(jTextField.getText()));
-            break;
+            return calculator.div(jTextField.getText());
+        default:
+            Exceptions.checkOperator(operator);
+            return "";
         }
     }
     
     private void errorMessage(String message) {
-        setSavedANS(message);
         jTextField.setText(message);
     }    
     
@@ -660,6 +659,7 @@ public class UICalculator extends javax.swing.JFrame {
             message == "div by zero!") {
             errorMessage(message);
             disableAllButtons();
+            setError(true);
             return true;
         }
         return false;
@@ -670,10 +670,8 @@ public class UICalculator extends javax.swing.JFrame {
         if (errorParser(result) ) return;
         result = Exceptions.checkSyntaxInputValue(result,calculator.getBase());
         if(errorParser(result)) return;
-        if(!wasEqualPressed()) {
-            performOperatorAction(operator);
-            if(errorParser(getSavedANS())) return;
-        }
+        if(!wasEqualPressed())
+            if (errorParser(performOperatorAction(operator))) return;
         jTextField.setText("0");
         setLastOperation(operator);
         performAllOperatorsButtonsActionExcept(operator,"disable");
@@ -719,28 +717,23 @@ public class UICalculator extends javax.swing.JFrame {
                 break;
             case "add":
                 plusButtonActionPerformed(null);
-                jTextField.setText(getSavedANS());
-                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
-                performAllBaseButtonsAction("enable");
                 break;
             case "sub":
                 minusButtonActionPerformed(null);
-                jTextField.setText(getSavedANS());
-                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
-                performAllBaseButtonsAction("enable");
                 break;
             case "mul":
                 mulButtonActionPerformed(null);
-                jTextField.setText(getSavedANS());
-                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
-                performAllBaseButtonsAction("enable");
                 break;
             case "div":
                 divButtonActionPerformed(null);
-                jTextField.setText(getSavedANS());
-                performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
-                performAllBaseButtonsAction("enable");
                 break;
+            default:
+                Exceptions.checkOperator(getLastOperation());
+        }
+        if(!hasOccurredAnError()) {
+            ansButtonActionPerformed(null);
+            performAllOperatorsButtonsActionExcept(getLastOperation(),"enable");
+            performAllBaseButtonsAction("enable");
         }
         setEqualPressed(true);
     }//GEN-LAST:event_equalButtonActionPerformed
