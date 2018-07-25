@@ -21,11 +21,8 @@ public class Converter {
         String[] splittedNumber = number.split("\\.");
         String intePart = splittedNumber[0];
         // ------- integer part -------
-        if(splittedNumber.length == 1) {
-            if(intePart.length() > Limits.maxIntDigits)
-                return "much int digits!";
-            return number;
-        }
+        if(Exceptions.checkIntegerMaxDigits(intePart))return "much int digits!";
+        if(splittedNumber.length == 1) return number;
         
         // ------- double part -------
         String doubPart = splittedNumber[1];
