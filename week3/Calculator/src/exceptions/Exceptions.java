@@ -23,6 +23,12 @@ public class Exceptions {
 
     protected static Matcher matcher;
     
+    public static void checkOperator(String operator) {
+        if(operator == "add" || operator == "sub" || operator == "mul" ||
+           operator == "div" || operator == "assignment") return;
+        throw new IllegalArgumentException("Invalid operator");
+    }
+    
     public static boolean checkIntegerMaxDigits(String integer) {
         return integer.length() > Limits.maxIntDigits;
     }
