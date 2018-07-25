@@ -1,4 +1,7 @@
 package calculator;
+
+import exceptions.Exceptions;
+
 /**
  *
  * @author cj
@@ -18,7 +21,12 @@ public class Calculator extends Converter {
     }
 
     public String getANSinStringFormat() {
-        return decToBase(Double.toString(getANS()));
+        String number = decToBase(Double.toString(getANS()));
+        String []splittedNumber = number.split("\\.");
+        String intePart = splittedNumber[0];
+        if(Exceptions.checkIntegerMaxDigits(intePart))
+            return "much int digits!";
+        return number;
     }
     
     public void setANS(double ANS) {
