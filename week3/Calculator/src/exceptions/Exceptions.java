@@ -27,6 +27,12 @@ public class Exceptions {
         return integer.length() > Limits.maxIntDigits;
     }
     
+    public static void checkButtonsAction(String action) {
+        if(action == "enable" || action == "disable") return;
+        throw new IllegalArgumentException("Invalid action requested for "
+            + " all buttons");
+    }
+    
     public static void checkLastOperationValue(String value) {
         if(value.equals("assignment") || value.equals("add") || 
            value.equals("sub") || value.equals("mul") || value.equals("div"))
