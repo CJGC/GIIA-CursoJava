@@ -102,5 +102,6 @@ public class Calculator extends Converter {
     
     public void assignment(String value) {
         setANS(baseToDec(value));
+        setFirstOperation(false);
     }
 }
