@@ -753,6 +753,7 @@ public class UICalculator extends javax.swing.JFrame {
 
     private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
         calculator.setANS(0.0);
+        calculator.setFirstOperation(true);
     }//GEN-LAST:event_acButtonActionPerformed
     /**
      * @param args the command line arguments
