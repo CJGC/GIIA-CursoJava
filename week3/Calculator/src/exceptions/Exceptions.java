@@ -1,6 +1,7 @@
 package exceptions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import limits.Limits;
 
 /**
  *
@@ -21,6 +22,10 @@ public class Exceptions {
         Pattern.compile("^[0-9ABCDEF]+(\\.[0-9ABCDEF]+)?$");
 
     protected static Matcher matcher;
+    
+    public static boolean checkIntegerMaxDigits(String integer) {
+        return integer.length() > Limits.maxIntDigits;
+    }
     
     public static void checkLastOperationValue(String value) {
         if(value.equals("assignment") || value.equals("add") || 
