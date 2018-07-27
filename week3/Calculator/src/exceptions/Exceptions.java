@@ -23,6 +23,29 @@ public class Exceptions {
 
     protected static Matcher matcher;
     
+    public static boolean exceededValueAllowed(double number,int base) {
+        int maximumValueAllowed = 0;
+        switch(base) {
+            case 10:
+                maximumValueAllowed = Limits.maxDecValueAllowed;
+                break;
+            case 2:
+                maximumValueAllowed = Limits.maxBinValueAllowed;
+                break;
+            case 8:
+                maximumValueAllowed = Limits.maxOctValueAllowed;
+                break;
+            case 16:
+                maximumValueAllowed = Limits.maxHexValueAllowed;
+                break;
+            default:
+                Exceptions.checkBase(base);
+                break;
+        }
+        
+        return (number > maximumValueAllowed);
+    }
+    
     public static void checkOperator(String operator) {
         if(operator == "add" || operator == "sub" || operator == "mul" ||
            operator == "div" || operator == "assignment") return;
