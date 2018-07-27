@@ -50,10 +50,7 @@ public class Calculator extends Converter {
     }
     
     private String doOperation(String operator,String value) {
-        double finalValue = ANS;
-        if(operator != "inv")
-            finalValue = baseToDec(value);
-        
+        double finalValue = baseToDec(value);
         if(!isFirstOperation())
             switch(operator) {
                 case "add":
@@ -80,10 +77,7 @@ public class Calculator extends Converter {
         }
         
         String trimmedANS = trimOutput(ANS);
-        if(trimmedANS != "Max val reached!") {
-            trimmedANS = decToBase(trimmedANS);
-            setANS(Double.parseDouble(trimmedANS));
-        }
+        if(trimmedANS != "Max val reached!") trimmedANS = decToBase(trimmedANS);
         else setANS(0.0);
         return trimmedANS;
     }
@@ -104,8 +98,8 @@ public class Calculator extends Converter {
         return doOperation("div",value);
     }
     
-    public String inv() {
-        return doOperation("inv",Double.toString(ANS));
+    public String inv(String value) {
+        return doOperation("inv",value);
     }
     
     public void assignment(String value) {
