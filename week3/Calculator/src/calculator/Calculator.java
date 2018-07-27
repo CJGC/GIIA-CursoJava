@@ -1,7 +1,6 @@
 package calculator;
 
 import exceptions.Exceptions;
-
 /**
  *
  * @author cj
@@ -21,12 +20,13 @@ public class Calculator extends Converter {
     }
 
     public String getANSinStringFormat() {
-        String number = decToBase(Double.toString(getANS()));
-        String []splittedNumber = number.split("\\.");
-        String intePart = splittedNumber[0];
-        if(Exceptions.checkIntegerMaxDigits(intePart))
-            return "much int digits!";
-        return number;
+        String trimmedANS = trimOutput(ANS);
+        if(trimmedANS != "Max val reached!") {
+            trimmedANS = decToBase(trimmedANS);
+            return trimmedANS;
+        }
+        else setANS(0.0);
+        return trimmedANS;
     }
     
     public void setANS(double ANS) {
@@ -50,22 +50,27 @@ public class Calculator extends Converter {
     }
     
     private String doOperation(String operator,String value) {
-        double finalValue = baseToDec(value);
+        double finalValue = ANS;
+        if(operator != "inv")
+            finalValue = baseToDec(value);
+        
         if(!isFirstOperation())
             switch(operator) {
                 case "add":
-                    setANS(getANS() + finalValue);
+                    setANS(ANS + finalValue);
                     break;
                 case "sub":
-                    setANS(getANS() - finalValue);
+                    setANS(ANS - finalValue);
                     break;
                 case "mul":
-                    setANS(getANS() * finalValue);
+                    setANS(ANS * finalValue);
                     break;
                 case "div":
-                    setANS(getANS() / finalValue);
+                    if (finalValue == 0) return "div by zero!";
+                    setANS(ANS / finalValue);
                     break;
                 case "inv":
+                    if (finalValue == 0) return "div by zero!";
                     setANS(1 / finalValue);
                     break;
             }
@@ -74,7 +79,7 @@ public class Calculator extends Converter {
             setANS(finalValue);
         }
         
-        String trimmedANS = trimOutput(getANS());
+        String trimmedANS = trimOutput(ANS);
         if(trimmedANS != "Max val reached!") {
             trimmedANS = decToBase(trimmedANS);
             setANS(Double.parseDouble(trimmedANS));
@@ -96,16 +101,11 @@ public class Calculator extends Converter {
     }
 
     public String div(String value) {
-        double finalValue = baseToDec(value);
-        if (finalValue == 0)
-            return "div by zero!";
         return doOperation("div",value);
     }
     
     public String inv() {
-        if (getANS() == 0) 
-            return "div by zero!";
-        return doOperation("inv",Double.toString(getANS()));
+        return doOperation("inv",Double.toString(ANS));
     }
     
     public void assignment(String value) {
