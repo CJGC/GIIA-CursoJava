@@ -158,7 +158,6 @@ public class Converter {
     
     protected double baseToDec(String value) {
         Exceptions.checkBase(this.base);
-        System.out.println(value);
         switch (this.base) {
             case 10:
                 Exceptions.checkDecValue(value);
