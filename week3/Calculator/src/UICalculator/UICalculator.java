@@ -636,14 +636,11 @@ public class UICalculator extends javax.swing.JFrame {
     
     private String performOperatorAction(String operator) {
         switch(operator) {
-        case "add":
-            return calculator.add(jTextField.getText());
-        case "sub":
-            return calculator.sub(jTextField.getText());
-        case "mul":
-            return calculator.mul(jTextField.getText());
-        case "div":
-            return calculator.div(jTextField.getText());
+        case "add": return calculator.add(jTextField.getText());
+        case "sub": return calculator.sub(jTextField.getText());
+        case "mul": return calculator.mul(jTextField.getText());
+        case "div": return calculator.div(jTextField.getText());
+        case "inv": return calculator.inv(jTextField.getText());
         default:
             Exceptions.checkOperator(operator);
             return "";
@@ -670,12 +667,17 @@ public class UICalculator extends javax.swing.JFrame {
         if (errorParser(result) ) return;
         result = Exceptions.checkSyntaxInputValue(result,calculator.getBase());
         if(errorParser(result)) return;
-        if(!wasEqualPressed())
+        if(!wasEqualPressed() || operator == "inv")
             if (errorParser(performOperatorAction(operator))) return;
-        jTextField.setText("0");
-        setLastOperation(operator);
-        performAllOperatorsButtonsActionExcept(operator,"disable");
-        performAllBaseButtonsAction("disable");
+        
+        // inverter is unary operator, therefore is not needed the next staments
+        if(operator != "inv") {
+            jTextField.setText("0");
+            setLastOperation(operator);
+            performAllOperatorsButtonsActionExcept(operator,"disable");
+            performAllBaseButtonsAction("disable");
+        }
+        else ansButtonActionPerformed(null);
     }
     
     private void plusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plusButtonActionPerformed
@@ -695,9 +697,9 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_divButtonActionPerformed
 
     private void invButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invButtonActionPerformed
-        String message = calculator.inv();
-        if(errorParser(message)) return;
-        jTextField.setText(message);
+        calculator.setFirstOperation(false);
+        operatorsActions("inv");
+        setEqualPressed(true);
     }//GEN-LAST:event_invButtonActionPerformed
 
     private void doEqualButtonAction() {
@@ -789,6 +791,7 @@ public class UICalculator extends javax.swing.JFrame {
     }//GEN-LAST:event_dotButtonActionPerformed
 
     private void acButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acButtonActionPerformed
+        setEqualPressed(false);
         calculator.setANS(0.0);
         calculator.setFirstOperation(true);
     }//GEN-LAST:event_acButtonActionPerformed
