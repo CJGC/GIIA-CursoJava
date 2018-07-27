@@ -1,5 +1,6 @@
 package calculator;
 import exceptions.Exceptions;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import limits.Limits;
@@ -9,63 +10,44 @@ import limits.Limits;
  */
 public class Converter {
     protected int base;
+    NumberFormat nf;
     
     Converter() {
         base = 10;
+        nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(Limits.maxFractionalDigits);
+        nf.setMinimumFractionDigits(1);
+        nf.setGroupingUsed(false);
     }
     
     public String trimInput(String number) {
-        if(Exceptions.checkDotsOnNumber(number))
-            return "sintax error!";
-        
+        if(Exceptions.checkDotsOnNumber(number)) return "sintax error!";
         String[] splittedNumber = number.split("\\.");
         String intePart = splittedNumber[0];
+        
         // ------- integer part -------
         if(Exceptions.checkIntegerMaxDigits(intePart))return "much int digits!";
         if(splittedNumber.length == 1) return number;
         
         // ------- double part -------
         String doubPart = splittedNumber[1];
-        if(doubPart.length() > Limits.maxDoubleDigits)
-            doubPart = "." + doubPart.substring(0,Limits.maxDoubleDigits);
-        else
-            doubPart = "." + doubPart;
+        if(doubPart.length() > Limits.maxFractionalDigits)
+            doubPart = "." + doubPart.substring(0,Limits.maxFractionalDigits);
+        else doubPart = "." + doubPart;
         return (intePart + doubPart);
     }
     
-    private double round(double number) {
-        double maxDigits = Limits.maxDoubleDigits;
-        double newNumber = 
-            Math.floor(number * Math.pow(10,maxDigits))/Math.pow(10,maxDigits);
-        return newNumber;
-    }
-    
     protected String trimOutput(double number) {
-        int maximumValueAllowed = 0;
-        switch(base) {
-            case 10:
-                maximumValueAllowed = Limits.maxDecValueAllowed;
-                break;
-            case 2:
-                maximumValueAllowed = Limits.maxBinValueAllowed;
-                break;
-            case 8:
-                maximumValueAllowed = Limits.maxOctValueAllowed;
-                break;
-            case 16:
-                maximumValueAllowed = Limits.maxHexValueAllowed;
-                break;
-            default:
-                Exceptions.checkBase(base);
-                break;
-        }
-
-        if(number > maximumValueAllowed)
+        if(Exceptions.exceededValueAllowed(number,base))
             return "Max val reached!";
-        
-        number = round(number);
-        
-        return Double.toString(number);
+        String value = nf.format(number);
+        int dotPos = value.indexOf('.');
+        int finalPos = value.length() - 1;
+        int fractionalDigits =  finalPos - dotPos + 1;
+        if(fractionalDigits > Limits.maxFractionalDigits)
+            value = value.substring(0,dotPos+1) 
+                    + value.substring(dotPos+1,Limits.maxFractionalDigits);
+        return value;
     }
     
     private String hexRules(int number) {
@@ -120,7 +102,7 @@ public class Converter {
         
         int doubleDigits = 0;
         while (!(values.contains(doubPart)) && doubPart != 0.00 && 
-                doubleDigits < Limits.maxDoubleDigits) {
+                doubleDigits < Limits.maxFractionalDigits) {
             values.add(doubPart);
             doubPart *= base;
             intePart = (int) (Math.floor(doubPart * 1e0) / 1e0);
@@ -176,7 +158,7 @@ public class Converter {
     
     protected double baseToDec(String value) {
         Exceptions.checkBase(this.base);
-        
+        System.out.println(value);
         switch (this.base) {
             case 10:
                 Exceptions.checkDecValue(value);
