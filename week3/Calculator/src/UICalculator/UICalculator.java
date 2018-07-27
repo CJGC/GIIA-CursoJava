@@ -656,7 +656,7 @@ public class UICalculator extends javax.swing.JFrame {
     
     private boolean errorParser(String message) {
         if(message == "sintax error!" || message == "much int digits!" || 
-            message == "div by zero!") {
+            message == "div by zero!" || message == "Max val reached!") {
             errorMessage(message);
             disableAllButtons();
             setError(true);
