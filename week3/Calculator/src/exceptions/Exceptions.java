@@ -48,7 +48,8 @@ public class Exceptions {
     
     public static void checkOperator(String operator) {
         if(operator == "add" || operator == "sub" || operator == "mul" ||
-           operator == "div" || operator == "assignment") return;
+           operator == "div" || operator == "inv" || operator == "assignment")
+            return;
         throw new IllegalArgumentException("Invalid operator");
     }
     
