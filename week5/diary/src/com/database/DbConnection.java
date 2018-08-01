@@ -17,6 +17,10 @@ public class DbConnection {
     private final String USER = "root";
     private final String PASS = "";
 
+    public Connection getConnection() {
+        return conn;
+    }
+    
     public DbConnection() {
         try {
             Class.forName(JDBC_DRIVER);
