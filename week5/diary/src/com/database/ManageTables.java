@@ -8,9 +8,9 @@ public class ManageTables {
     
     private Statement stmt;
     
-    ManageTables(Connection conn) {
+    public ManageTables(DbConnection conn) {
         try {
-            stmt = conn.createStatement();
+            stmt = conn.getConnection().createStatement();
         }
         catch(SQLException e) {
             throw new IllegalArgumentException("Unable to create statement");
@@ -26,12 +26,14 @@ public class ManageTables {
         }
     }
     
-    public void createTables(Connection conn,String sql) {
+    public void createTables(String sql) {
         try {
             stmt.executeUpdate(sql);
         }
         catch(SQLException e) {
             System.err.println("Table was not created successfully!");
+            return;
         }
+        System.out.println("Table was created successfully!");
     }
 }
