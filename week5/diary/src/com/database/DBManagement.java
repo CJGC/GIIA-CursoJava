@@ -9,7 +9,6 @@ public class DBManagement {
     // object type Connection
     private static Connection conn;
     private static Statement stmt;
-    private static PreparedStatement pstmt;
     
     // JDBC driver name and database URL
     private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
@@ -19,8 +18,12 @@ public class DBManagement {
     private static final String USER = "root";
     private static final String PASS = "";
     
-    public Connection getConnection() {
+    public static Connection getConnection() {
         return conn;
+    }
+    
+    public static Statement getStatement() {
+        return stmt;
     }
     
     public static void buildConnection() {
@@ -55,7 +58,7 @@ public class DBManagement {
         }
     }
     
-    public void closeStmt() {
+    public static void closeStmt() {
         try {
             stmt.close();
         }
@@ -64,7 +67,7 @@ public class DBManagement {
         }
     }
     
-    public void createTables(String sql) {
+    public static void createTables(String sql) {
         try {
             stmt.executeUpdate(sql);
         }
