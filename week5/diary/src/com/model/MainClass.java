@@ -1,5 +1,6 @@
 package com.model;
 import com.database.*;
+import com.controllers.CountryController;
 /**
  *
  * @author cj
@@ -10,22 +11,24 @@ public class MainClass {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        DbConnection conn = new DbConnection();
-        ManageTables mt = new ManageTables(conn);
-        mt.createTables(TablesDefinition.countryTable);
-        mt.createTables(TablesDefinition.provinceTable);
-        mt.createTables(TablesDefinition.cityTable);
-        mt.createTables(TablesDefinition.addressTable);
-        mt.createTables(TablesDefinition.personTable);
-        mt.createTables(TablesDefinition.emailTable);
-        mt.createTables(TablesDefinition.phoneTable);
-        mt.createTables(TablesDefinition.registerTable);
-        mt.createTables(TablesDefinition.userTable);
-        mt.createTables(TablesDefinition.groupTable);
-        mt.createTables(TablesDefinition.userGroupTable);
-        mt.createTables(TablesDefinition.registerGroupTable);
-        mt.closeStmt();
-        conn.disconnect();
+        DBManagement.buildConnection();
+        DBManagement.buildStmt();
+        DBManagement.createTables(TablesDefinition.countryTable);
+        DBManagement.createTables(TablesDefinition.provinceTable);
+        DBManagement.createTables(TablesDefinition.cityTable);
+        DBManagement.createTables(TablesDefinition.addressTable);
+        DBManagement.createTables(TablesDefinition.personTable);
+        DBManagement.createTables(TablesDefinition.emailTable);
+        DBManagement.createTables(TablesDefinition.phoneTable);
+        DBManagement.createTables(TablesDefinition.registerTable);
+        DBManagement.createTables(TablesDefinition.userTable);
+        DBManagement.createTables(TablesDefinition.groupTable);
+        DBManagement.createTables(TablesDefinition.userGroupTable);
+        DBManagement.createTables(TablesDefinition.registerGroupTable);
+        
+        CountryController cc = new CountryController();
+        DBManagement.closeStmt();
+        DBManagement.disconnect();
     }
     
 }
