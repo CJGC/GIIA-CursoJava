@@ -7,21 +7,23 @@ import java.sql.*;
 public class DbConnection {
     
     // object type Connection
-    private final Connection conn;
+    private static Connection conn;
+    private static Statement stmt;
+    private static PreparedStatement pstmt;
     
     // JDBC driver name and database URL
-    private final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
-    private final String DB_URL = "jdbc:mariadb://localhost:3306/diary";
-
+    private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    private static final String DB_URL = "jdbc:mariadb://localhost:3306/diary";
+    
     //  Database credentials
-    private final String USER = "root";
-    private final String PASS = "";
-
+    private static final String USER = "root";
+    private static final String PASS = "";
+    
     public Connection getConnection() {
         return conn;
     }
     
-    public DbConnection() {
+    public static void buildConnection() {
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -35,12 +37,41 @@ public class DbConnection {
         System.out.println("connection was established successfully.");
     }
     
-    public void disconnect() {
+    public static void disconnect() {
         try {
             conn.close();
         }
         catch(SQLException e) {
             System.err.println("Unable to discconect");
         }
+    }
+
+    public static void buildStmt() {
+        try {
+            stmt = conn.createStatement();
+        }
+        catch(SQLException e) {
+            throw new IllegalArgumentException("Unable to create statement");
+        }
+    }
+    
+    public void closeStmt() {
+        try {
+            stmt.close();
+        }
+        catch(SQLException e) {
+            System.err.println("Unable to disconnect statement");
+        }
+    }
+    
+    public void createTables(String sql) {
+        try {
+            stmt.executeUpdate(sql);
+        }
+        catch(SQLException e) {
+            System.err.println("Table was not created successfully!");
+            return;
+        }
+        System.out.println("Table was created successfully!");
     }
 }
