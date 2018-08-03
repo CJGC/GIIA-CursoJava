@@ -27,7 +27,7 @@ public class ProvinceController extends Controllers {
             System.out.println("Register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to create register");
+            System.err.println("Was not possible create register");
             return;
         }
         
@@ -39,7 +39,7 @@ public class ProvinceController extends Controllers {
             rs.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to perform province query");
+            System.err.println("Was not possible perform province query");
         }
         
         if(province_id == -1) {

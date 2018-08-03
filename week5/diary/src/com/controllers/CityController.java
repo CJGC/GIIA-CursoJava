@@ -27,7 +27,7 @@ public class CityController extends Controllers {
             System.out.println("Register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to create register");
+            System.err.println("Was not possible create register");
             return;
         }
         
@@ -39,7 +39,7 @@ public class CityController extends Controllers {
             rs.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to perform city query");
+            System.err.println("Was not possible perform city query");
         }
         
         if(city_id == -1) {
