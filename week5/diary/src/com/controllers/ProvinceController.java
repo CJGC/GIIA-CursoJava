@@ -39,7 +39,7 @@ public class ProvinceController extends Controllers {
             rs.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to make province query");
+            System.err.println("Was not possible to perform province query");
         }
         
         if(province_id == -1) {

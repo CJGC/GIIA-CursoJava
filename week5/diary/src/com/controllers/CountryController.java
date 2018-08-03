@@ -37,7 +37,7 @@ public class CountryController extends Controllers {
             rs.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to make country query");
+            System.err.println("Was not possible to perform country query");
         }
         
         if(country_id == -1) {
