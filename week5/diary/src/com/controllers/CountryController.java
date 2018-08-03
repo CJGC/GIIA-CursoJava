@@ -89,10 +89,7 @@ public class CountryController extends Controllers {
         Country country = new Country();
         country.setCountry_id(id);
         country.setName(content[0]);
-        Object temp = objects.replace(Integer.toString(id),country);
-        if(temp == null)
-            System.err.println("There was an error registering the edited "
-                + "country");
+        objects.replace(Integer.toString(id),country);
     }
     
     @Override
