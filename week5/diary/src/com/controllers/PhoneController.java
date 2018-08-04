@@ -97,6 +97,7 @@ public class PhoneController extends Controllers {
         }
         
         Phone phone = new Phone();
+        phone.setPhone_id(id);
         phone.setNumber(content[0]);
         phone.setCountryCode(content[1]);
         phone.setPerson_id(Integer.parseInt(content[2]));
