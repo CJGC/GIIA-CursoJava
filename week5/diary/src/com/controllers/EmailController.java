@@ -93,6 +93,7 @@ public class EmailController extends Controllers {
         }
         
         Email email = new Email();
+        email.setEmail_id(id);
         email.setName(content[0]);
         email.setPerson_id(Integer.parseInt(content[1]));
         objects.replace(Integer.toString(id),email);
