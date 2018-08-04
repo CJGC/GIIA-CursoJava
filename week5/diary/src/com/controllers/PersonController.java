@@ -139,7 +139,7 @@ public class PersonController extends Controllers {
         }
         
         Person person = new Person();
-        person.setAddress_id(id);
+        person.setPerson_id(id);
         person.setName(content[0]);
         person.setSurname(content[1]);
         person.setAge(Integer.parseInt(content[2]));
