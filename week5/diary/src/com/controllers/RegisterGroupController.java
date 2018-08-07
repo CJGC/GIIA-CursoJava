@@ -8,6 +8,25 @@ import java.sql.*;
  */
 public class RegisterGroupController extends Controllers {
     
+    public RegisterGroupController() {
+        
+        String sql = "SELECT * FROM RegisterGroup;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                RegisterGroup registerGroup = new RegisterGroup();
+                registerGroup.setRegisterGroup_id(rs.getInt("registerGroup_id"));
+                registerGroup.setGroup_id(rs.getInt("group_id"));
+                registerGroup.setRegister_id(rs.getInt("register_id"));
+                objects.put(registerGroup.getRegisterGroup_id(), registerGroup);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from registerGroup "
+                + "controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -71,7 +90,13 @@ public class RegisterGroupController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("RegisterGroup map does not have the specified "
+                + "key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -97,15 +122,21 @@ public class RegisterGroupController extends Controllers {
             return;
         }
         
-        RegisterGroup registerGroup = new RegisterGroup();
+        RegisterGroup registerGroup = (RegisterGroup) objects.get(id);
         registerGroup.setRegisterGroup_id(id);
         registerGroup.setGroup_id(Integer.parseInt(content[0]));
         registerGroup.setRegister_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),registerGroup);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            RegisterGroup registerGroup = (RegisterGroup) objects.get(obj);
+            System.out.println("Register group id: " + 
+                registerGroup.getRegisterGroup_id());
+            System.out.println("Group id: " + registerGroup.getGroup_id());
+            System.out.println("Register id: " + registerGroup.getRegister_id() 
+                + "\n");
+        });
     }
 }

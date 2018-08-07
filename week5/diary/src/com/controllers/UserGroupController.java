@@ -8,6 +8,25 @@ import java.sql.*;
  */
 public class UserGroupController extends Controllers {
     
+    public UserGroupController() {
+        
+        String sql = "SELECT * FROM UserGroup;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                UserGroup userGroup = new UserGroup();
+                userGroup.setUserGroup_id(rs.getInt("userGroup_id"));
+                userGroup.setGroup_id(rs.getInt("group_id"));
+                userGroup.setUser_id(rs.getInt("user_id"));
+                objects.put(userGroup.getUserGroup_id(), userGroup);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from userGroup "
+                + "controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -44,7 +63,7 @@ public class UserGroupController extends Controllers {
         }
         
         if(userGroup_id == -1) {
-            System.err.println("Error capturing group_id");
+            System.err.println("Error capturing userGroup_id");
             return;
         }
 
@@ -69,7 +88,13 @@ public class UserGroupController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("UserGroup map does not have the specified "
+                + "key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -94,15 +119,26 @@ public class UserGroupController extends Controllers {
             return;
         }
         
-        UserGroup userGroup = new UserGroup();
+        if(!objects.containsKey(id)) {
+            System.err.println("UserGroup map does not have the specified "
+                + "key!");
+            return;
+        }
+        
+        UserGroup userGroup = (UserGroup) objects.get(id);
         userGroup.setUserGroup_id(id);
         userGroup.setGroup_id(Integer.parseInt(content[0]));
         userGroup.setUser_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),userGroup);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            UserGroup userGroup = (UserGroup) objects.get(obj);
+            System.out.println("User group id: " + userGroup.getUserGroup_id());
+            System.out.println("Group id: " + userGroup.getGroup_id());
+            System.out.println("User id: " + userGroup.getUser_id() + 
+                "\n");
+        });
     }
 }

@@ -8,6 +8,24 @@ import java.sql.*;
  */
 public class EmailController extends Controllers {
     
+    public EmailController() {
+        
+        String sql = "SELECT * FROM Email;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Email email = new Email();
+                email.setEmail_id(rs.getInt("email_id"));
+                email.setName(rs.getString("name"));
+                email.setPerson_id(rs.getInt("person_id"));
+                objects.put(email.getEmail_id(), email);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from phone controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -68,7 +86,12 @@ public class EmailController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Email map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -92,15 +115,24 @@ public class EmailController extends Controllers {
             return;
         }
         
-        Email email = new Email();
+        if(!objects.containsKey(id)) {
+            System.err.println("Email map does not have the specified key!");
+            return;
+        }
+        
+        Email email = (Email) objects.get(id);
         email.setEmail_id(id);
         email.setName(content[0]);
         email.setPerson_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),email);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Email email = (Email) objects.get(obj);
+            System.out.println("Email id: " + email.getEmail_id());
+            System.out.println("Email name: " + email.getName());
+            System.out.println("Person id: " + email.getPerson_id() + "\n");
+        });
     }
 }

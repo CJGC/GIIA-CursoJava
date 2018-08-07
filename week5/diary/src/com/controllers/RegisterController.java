@@ -8,6 +8,25 @@ import java.sql.*;
  */
 public class RegisterController extends Controllers {
     
+    public RegisterController() {
+        
+        String sql = "SELECT * FROM Register;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Register register = new Register();
+                register.setRegister_id(rs.getInt("register_id"));
+                register.setNickname(rs.getString("nickname"));
+                register.setPerson_id(rs.getInt("person_id"));
+                objects.put(register.getRegister_id(), register);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from register "
+                + "controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -69,7 +88,12 @@ public class RegisterController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Register map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -94,15 +118,24 @@ public class RegisterController extends Controllers {
             return;
         }
         
-        Register register = new Register();
+        if(!objects.containsKey(id)) {
+            System.err.println("Register map does not have the specified key!");
+            return;
+        }
+        
+        Register register = (Register) objects.get(id);
         register.setRegister_id(id);
         register.setNickname(content[0]);
         register.setPerson_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),register);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Register register = (Register) objects.get(obj);
+            System.out.println("Register id: " + register.getRegister_id());
+            System.out.println("Register nickname: " + register.getNickname());
+            System.out.println("Person id: " + register.getPerson_id() + "\n");
+        });
     }
 }

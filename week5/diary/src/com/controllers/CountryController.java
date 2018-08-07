@@ -8,6 +8,22 @@ import java.sql.*;
  */
 public class CountryController extends Controllers {
     
+    public CountryController() {
+        String sql = "SELECT * FROM Country;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Country country = new Country();
+                country.setCountry_id(rs.getInt("country_id"));
+                country.setName(rs.getString("name"));
+                objects.put(country.getCountry_id(), country);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from country controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -65,7 +81,12 @@ public class CountryController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Country map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -86,15 +107,23 @@ public class CountryController extends Controllers {
             return;
         }
         
-        Country country = new Country();
+        if(!objects.containsKey(id)) {
+            System.err.println("Country map does not have the specified key!");
+            return;
+        }
+        
+        Country country = (Country) objects.get(id);
         country.setCountry_id(id);
         country.setName(content[0]);
-        objects.replace(Integer.toString(id),country);
-    }
+}
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Country country = (Country) objects.get(obj);
+            System.out.println("Country id: " + country.getCountry_id());
+            System.out.println("Country name: " + country.getName() + "\n");
+        });
     }
     
 }

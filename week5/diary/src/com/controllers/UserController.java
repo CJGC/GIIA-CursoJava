@@ -8,6 +8,25 @@ import java.sql.*;
  */
 public class UserController extends Controllers {
     
+    public UserController() {
+        
+        String sql = "SELECT * FROM User;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                User user = new User();
+                user.setUser_id(rs.getInt("user_id"));
+                user.setNickname(rs.getString("nickname"));
+                user.setPassword(rs.getString("password"));
+                user.setPerson_id(rs.getInt("person_id"));
+                objects.put(user.getUser_id(), user);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from user controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -71,7 +90,12 @@ public class UserController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("User map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -97,16 +121,26 @@ public class UserController extends Controllers {
             return;
         }
         
-        User user = new User();
+        if(!objects.containsKey(id)) {
+            System.err.println("User map does not have the specified key!");
+            return;
+        }
+        
+        User user = (User) objects.get(id);
         user.setUser_id(id);
         user.setNickname(content[0]);
         user.setPassword(content[1]);
         user.setPerson_id(Integer.parseInt(content[2]));
-        objects.replace(Integer.toString(id),user);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            User user = (User) objects.get(obj);
+            System.out.println("User id: " + user.getUser_id());
+            System.out.println("User nickname: " + user.getNickname());
+            System.out.println("User password: " + user.getPassword());
+            System.out.println("Person id: " + user.getPerson_id() + "\n");
+        });
     }
 }

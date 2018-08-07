@@ -8,6 +8,23 @@ import java.sql.*;
  */
 public class AddressController extends Controllers {
     
+    public AddressController() {
+        String sql = "SELECT * FROM Address;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Address address = new Address();
+                address.setAddress_id(rs.getInt("address_id"));
+                address.setName(rs.getString("name"));
+                address.setCity_id(rs.getInt("city_id"));
+                objects.put(address.getAddress_id(), address);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from address controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -67,7 +84,12 @@ public class AddressController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Address map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -91,15 +113,24 @@ public class AddressController extends Controllers {
             return;
         }
         
-        Address address = new Address();
+        if(!objects.containsKey(id)) {
+            System.err.println("Address map does not have the specified key!");
+            return;
+        }
+        
+        Address address = (Address) objects.get(id);
         address.setAddress_id(id);
         address.setName(content[0]);
         address.setCity_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),address);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Address address = (Address) objects.get(obj);
+            System.out.println("Address id: " + address.getAddress_id());
+            System.out.println("Address name: " + address.getName());
+            System.out.println("City id: " + address.getCity_id() + "\n");
+        });
     }
 }

@@ -5,14 +5,12 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  *
  * @author cj
  */
 public class PersonController extends Controllers {
-    
+        
     private final String pattern;
     private final SimpleDateFormat sdf;
     private Date date;
@@ -20,7 +18,25 @@ public class PersonController extends Controllers {
     public PersonController() {
         pattern = "yyyy-mm-dd";
         sdf = new SimpleDateFormat(pattern);
-        
+    
+        String sql = "SELECT * FROM Person;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Person person = new Person();
+                person.setPerson_id(rs.getInt("person_id"));
+                person.setName(rs.getString("name"));
+                person.setSurname(rs.getString("surname"));
+                person.setAge(rs.getInt("age"));
+                person.setBirthday(rs.getDate("birthday"));
+                person.setPhoto(rs.getString("photo"));
+                person.setAddress_id(rs.getInt("address_id"));
+                objects.put(person.getPerson_id(), person);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from person controller)!");
+        }
     }
     
     @Override
@@ -101,7 +117,12 @@ public class PersonController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Person map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -138,7 +159,12 @@ public class PersonController extends Controllers {
             return;
         }
         
-        Person person = new Person();
+        if(!objects.containsKey(id)) {
+            System.err.println("Person map does not have the specified key!");
+            return;
+        }
+        
+        Person person = (Person) objects.get(id);
         person.setPerson_id(id);
         person.setName(content[0]);
         person.setSurname(content[1]);
@@ -146,12 +172,20 @@ public class PersonController extends Controllers {
         person.setBirthday(date);
         person.setPhoto(content[4]);
         person.setAddress_id(Integer.parseInt(content[5]));
-        objects.replace(Integer.toString(id),person);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Person person = (Person) objects.get(obj);
+            System.out.println("Person's id: " + person.getPerson_id());
+            System.out.println("Person's name: " + person.getName());
+            System.out.println("Person's surname: " + person.getSurname());
+            System.out.println("Person's age: " + person.getAge());
+            System.out.println("Person's date: " + person.getBirthday());
+            System.out.println("Person's photo: " + person.getPhoto());
+            System.out.println("Address id: " + person.getAddress_id() + "\n");
+        });
     }
 
 }

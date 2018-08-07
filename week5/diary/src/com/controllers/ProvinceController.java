@@ -8,6 +8,23 @@ import java.sql.*;
  */
 public class ProvinceController extends Controllers {
     
+    public ProvinceController() {
+        String sql = "SELECT * FROM Province;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Province province = new Province();
+                province.setProvince_id(rs.getInt("province_id"));
+                province.setName(rs.getString("name"));
+                province.setCountry_id(rs.getInt("country_id"));
+                objects.put(province.getProvince_id(), province);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from province controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -68,7 +85,12 @@ public class ProvinceController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Province map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -92,15 +114,24 @@ public class ProvinceController extends Controllers {
             return;
         }
         
-        Province province = new Province();
+        if(!objects.containsKey(id)) {
+            System.err.println("Province map does not have the specified key!");
+            return;
+        }
+        
+        Province province = (Province) objects.get(id);
         province.setProvince_id(id);
         province.setName(content[0]);
         province.setCountry_id(Integer.parseInt(content[1]));
-        objects.replace(Integer.toString(id),province);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Province province = (Province) objects.get(obj);
+            System.out.println("Province id: " + province.getProvince_id());
+            System.out.println("Province name: " + province.getName());
+            System.out.println("Country id: " + province.getCountry_id()+ "\n");
+        });
     }
 }

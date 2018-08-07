@@ -8,6 +8,25 @@ import java.sql.*;
  */
 public class GroupController extends Controllers {
     
+    public GroupController() {
+        
+        String sql = "SELECT * FROM _Group;";
+        try {
+            ResultSet rs =  DBManagement.getStatement().executeQuery(sql);
+            while(rs.next()) {
+                Group group = new Group();
+                group.setGroup_id(rs.getInt("group_id"));
+                group.setName(rs.getString("name"));
+                group.setPhoto(rs.getString("photo"));
+                group.setMaxAllowed(rs.getInt("maxAllowed"));
+                objects.put(group.getGroup_id(), group);
+            }
+        }
+        catch(SQLException e) {
+            System.err.println("Error in sql query (from group controller)!");
+        }
+    }
+    
     @Override
     public void create(String[] content) {
         /* --------- Content array contains ---------
@@ -72,7 +91,12 @@ public class GroupController extends Controllers {
             return;
         }
         
-        objects.remove(Integer.toString(id));
+        if(!objects.containsKey(id)) {
+            System.err.println("Group map does not have the specified key!");
+            return;
+        }
+        
+        objects.remove(id);
     }
     
     @Override
@@ -99,16 +123,27 @@ public class GroupController extends Controllers {
             return;
         }
         
-        Group group = new Group();
+        if(!objects.containsKey(id)) {
+            System.err.println("Group map does not have the specified key!");
+            return;
+        }
+        
+        Group group = (Group) objects.get(id);
         group.setGroup_id(id);
         group.setName(content[0]);
         group.setPhoto(content[1]);
         group.setMaxAllowed(Integer.parseInt(content[2]));
-        objects.replace(Integer.toString(id),group);
     }
     
     @Override
     public void show() {
-        
+        objects.keySet().forEach((obj) -> {
+            Group group = (Group) objects.get(obj);
+            System.out.println("Group id: " + group.getGroup_id());
+            System.out.println("Group name: " + group.getName());
+            System.out.println("Group photo: " + group.getPhoto());
+            System.out.println("Group capacity: " + group.getMaxAllowed() + 
+                "\n");
+        });
     }
 }
