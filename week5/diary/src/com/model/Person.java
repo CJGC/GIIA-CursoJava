@@ -1,5 +1,6 @@
 package com.model;
 
+import java.io.FileInputStream;
 import java.util.Date;
 /**
  *
@@ -12,7 +13,7 @@ public class Person {
     private String surname;
     private int age;
     private Date birthday;
-    private String photo;
+    private FileInputStream photo;
     private int address_id;
 
     public int getPerson_id() {
@@ -55,11 +56,11 @@ public class Person {
         this.birthday = birthday;
     }
 
-    public String getPhoto() {
+    public FileInputStream getPhoto() {
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(FileInputStream photo) {
         this.photo = photo;
     }
 

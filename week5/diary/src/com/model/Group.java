@@ -1,4 +1,7 @@
 package com.model;
+
+import java.io.FileInputStream;
+
 /**
  *
  * @author cj
@@ -8,7 +11,7 @@ public class Group {
     private String name;
     private String owner;
     private int maxAllowed;
-    private String photo;
+    private FileInputStream photo;
 
     public int getGroup_id() {
         return group_id;
@@ -42,11 +45,11 @@ public class Group {
         this.maxAllowed = maxAllowed;
     }
 
-    public String getPhoto() {
+    public FileInputStream getPhoto() {
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(FileInputStream photo) {
         this.photo = photo;
     }
 }
