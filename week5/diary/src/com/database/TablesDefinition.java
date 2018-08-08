@@ -45,7 +45,7 @@ public class TablesDefinition {
         + " surname VARCHAR(50) NOT NULL, "
         + " age INTEGER NOT NULL, "
         + " birthday DATE NOT NULL, "
-        + " photo VARCHAR(10000), "
+        + " photo blob, "
         + " address_id INTEGER, "
         + " PRIMARY KEY ( person_id ), "
         + " CONSTRAINT FOREIGN KEY (address_id) REFERENCES Address "
@@ -93,7 +93,7 @@ public class TablesDefinition {
         "CREATE TABLE IF NOT EXISTS _Group "
         + "(group_id INTEGER NOT NULL AUTO_INCREMENT, "
         + " name VARCHAR(50) NOT NULL, "
-        + " photo VARCHAR(500), "
+        + " photo blob, "
         + " maxAllowed INTEGER NOT NULL, "
         + " PRIMARY KEY ( group_id ))";
         
