@@ -155,7 +155,6 @@ public class PersonController {
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            System.out.println("Requested person was updated successfully");
             prstmt.setString(1,content[0]);
             prstmt.setString(2,content[1]);
             prstmt.setInt(3,Integer.parseInt(content[2]));
@@ -171,6 +170,7 @@ public class PersonController {
             prstmt.setInt(6,Integer.parseInt(content[4]));
             prstmt.setInt(7, id);
             prstmt.executeUpdate();
+            System.out.println("Requested person was updated successfully");
             prstmt.close();
             date = sdf.parse(content[3]);
         }
