@@ -138,6 +138,7 @@ public class GroupController {
             prstmt.setBinaryStream(2,inputStream,
                     photo.getHeight() * photo.getWidth());
             prstmt.setInt(3,Integer.parseInt(content[1]));
+            prstmt.setInt(4, id);
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Requested group was updated successfully");
