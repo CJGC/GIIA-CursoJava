@@ -1,23 +1,33 @@
 package com.controllers;
 import com.model.Person;
 import com.database.DBManagement;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
 /**
  *
  * @author cj
  */
-public class PersonController extends Controllers {
+public class PersonController {
         
     private final String pattern;
     private final SimpleDateFormat sdf;
     private Date date;
+    private HashMap objects;
     
-    public PersonController() {
+    public PersonController() throws IOException {
         pattern = "yyyy-mm-dd";
         sdf = new SimpleDateFormat(pattern);
+        objects = new HashMap();
     
         String sql = "SELECT * FROM Person;";
         try {
@@ -29,7 +39,9 @@ public class PersonController extends Controllers {
                 person.setSurname(rs.getString("surname"));
                 person.setAge(rs.getInt("age"));
                 person.setBirthday(rs.getDate("birthday"));
-                person.setPhoto(rs.getString("photo"));
+                InputStream IS = rs.getBinaryStream("photo");
+                BufferedImage photo = ImageIO.read(IS);
+                person.setPhoto(photo);
                 person.setAddress_id(rs.getInt("address_id"));
                 objects.put(person.getPerson_id(), person);
             }
@@ -39,17 +51,14 @@ public class PersonController extends Controllers {
         }
     }
     
-    @Override
-    public void create(String[] content) {
+    public void create(String[] content,BufferedImage photo) throws IOException{
         /* --------- Content array contains ---------
             content[0] -> person's name
             content[1] -> person's surname
             content[2] -> person's age
             content[3] -> person's birthday
-            content[4] -> person's photo
-            content[5] -> foreign key (address_id)
+            content[4] -> foreign key (address_id)
         */
-        
         String sql = "INSERT INTO Person "
             + "(name,surname,age,birthday,photo,address_id) "
             + "VALUES (?,?,?,?,?,?);";
@@ -61,8 +70,15 @@ public class PersonController extends Controllers {
             prstmt.setString(2,content[1]);
             prstmt.setInt(3,Integer.parseInt(content[2]));
             prstmt.setDate(4, java.sql.Date.valueOf(content[3]));
-            prstmt.setString(5,content[4]);
-            prstmt.setInt(6, Integer.parseInt(content[5]));
+            
+            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+            ImageIO.write(photo, "jpeg", photoStream);
+            InputStream inputStream = 
+                    new ByteArrayInputStream(photoStream.toByteArray());
+            prstmt.setBinaryStream(5,inputStream,
+                    photo.getHeight() * photo.getWidth());
+            
+            prstmt.setInt(6,Integer.parseInt(content[4]));
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -99,12 +115,11 @@ public class PersonController extends Controllers {
         person.setSurname(content[1]);
         person.setAge(Integer.parseInt(content[2]));
         person.setBirthday(date);
-        person.setPhoto(content[4]);
-        person.setAddress_id(Integer.parseInt(content[5]));
+        person.setPhoto(photo);
+        person.setAddress_id(Integer.parseInt(content[4]));
         objects.put(Integer.toString(person_id), person);
     }
     
-    @Override
     public void delete(int id) {
         String sql = "DELETE FROM Person WHERE person_id=" + id + ";";
         try {
@@ -125,30 +140,40 @@ public class PersonController extends Controllers {
         objects.remove(id);
     }
     
-    @Override
-    public void edit(int id, String[] content) {
+    public void edit(int id, String[] content,BufferedImage photo) 
+            throws IOException {
         /* --------- Content array contains ---------
             content[0] -> person's name
             content[1] -> person's surname
             content[2] -> person's age
             content[3] -> person's birthday
-            content[4] -> person's photo
-            content[5] -> foreign key (address_id)
+            content[4] -> foreign key (address_id)
         */
         
         String sql = "UPDATE Person SET "
-            + "name='" + content[0] + "',"
-            + "surname='" + content[1] + "',"
-            + "age='" + content[2] + "',"
-            + "birthday='" + content[3] + "',"
-            + "photo='" + content[4] + "',"
-            + "address_id='" + content[5] + "'"
-            + " WHERE person_id=" + id + ";";
+            + "name=?, surname=?, age=?, birthday=?, photo=?, address_id=?"
+            + " WHERE person_id=?";
         try {
-            ResultSet rs = DBManagement.getStatement().executeQuery(sql);
+            PreparedStatement prstmt;
+            prstmt = DBManagement.getConnection().prepareStatement(sql);
             System.out.println("Requested person was updated successfully");
+            prstmt.setString(1,content[0]);
+            prstmt.setString(2,content[1]);
+            prstmt.setInt(3,Integer.parseInt(content[2]));
+            prstmt.setDate(4,java.sql.Date.valueOf(content[3]));
+            
+            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+            ImageIO.write(photo, "jpeg", photoStream);
+            InputStream inputStream = 
+                    new ByteArrayInputStream(photoStream.toByteArray());
+            prstmt.setBinaryStream(5,inputStream,
+                    photo.getHeight() * photo.getWidth());
+            
+            prstmt.setInt(6,Integer.parseInt(content[4]));
+            prstmt.setInt(7, id);
+            prstmt.executeUpdate();
+            prstmt.close();
             date = sdf.parse(content[3]);
-            rs.close();
         }
         catch(SQLException e) {
             System.err.println("Was not possible update the requested person");
@@ -170,11 +195,10 @@ public class PersonController extends Controllers {
         person.setSurname(content[1]);
         person.setAge(Integer.parseInt(content[2]));
         person.setBirthday(date);
-        person.setPhoto(content[4]);
-        person.setAddress_id(Integer.parseInt(content[5]));
+        person.setPhoto(photo);
+        person.setAddress_id(Integer.parseInt(content[4]));
     }
     
-    @Override
     public void show() {
         objects.keySet().forEach((obj) -> {
             Person person = (Person) objects.get(obj);
@@ -183,7 +207,6 @@ public class PersonController extends Controllers {
             System.out.println("Person's surname: " + person.getSurname());
             System.out.println("Person's age: " + person.getAge());
             System.out.println("Person's date: " + person.getBirthday());
-            System.out.println("Person's photo: " + person.getPhoto());
             System.out.println("Address id: " + person.getAddress_id() + "\n");
         });
     }
