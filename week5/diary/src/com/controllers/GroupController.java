@@ -1,14 +1,26 @@
 package com.controllers;
 import com.model.Group;
 import com.database.DBManagement;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
 /**
  *
  * @author cj
  */
-public class GroupController extends Controllers {
+public class GroupController {
     
-    public GroupController() {
+    private HashMap objects;
+    
+    public GroupController() throws IOException {
+        
+        objects = new HashMap();
         
         String sql = "SELECT * FROM _Group;";
         try {
@@ -17,7 +29,9 @@ public class GroupController extends Controllers {
                 Group group = new Group();
                 group.setGroup_id(rs.getInt("group_id"));
                 group.setName(rs.getString("name"));
-                group.setPhoto(rs.getString("photo"));
+                InputStream IS = rs.getBinaryStream("photo");
+                BufferedImage photo = ImageIO.read(IS);
+                group.setPhoto(photo);
                 group.setMaxAllowed(rs.getInt("maxAllowed"));
                 objects.put(group.getGroup_id(), group);
             }
@@ -27,12 +41,10 @@ public class GroupController extends Controllers {
         }
     }
     
-    @Override
-    public void create(String[] content) {
+    public void create(String[] content,BufferedImage photo) throws IOException{
         /* --------- Content array contains ---------
             content[0] -> name
-            content[1] -> photo
-            content[2] -> maxAllowed
+            content[1] -> maxAllowed
         */
         
         String sql = "INSERT INTO _Group (name,photo,maxAllowed) "
@@ -42,8 +54,16 @@ public class GroupController extends Controllers {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,content[0]);
-            prstmt.setString(2,content[1]);
-            prstmt.setInt(3,Integer.parseInt(content[2]));
+            
+            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+            ImageIO.write(photo, "jpeg", photoStream);
+            InputStream inputStream = 
+                    new ByteArrayInputStream(photoStream.toByteArray());
+            
+            prstmt.setBinaryStream(2,inputStream,
+                    photo.getHeight() * photo.getWidth());
+            
+            prstmt.setInt(3,Integer.parseInt(content[1]));
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -72,12 +92,11 @@ public class GroupController extends Controllers {
         Group group = new Group();
         group.setGroup_id(group_id);
         group.setName(content[0]);
-        group.setPhoto(content[1]);
-        group.setMaxAllowed(Integer.parseInt(content[2]));
+        group.setPhoto(photo);
+        group.setMaxAllowed(Integer.parseInt(content[1]));
         objects.put(Integer.toString(group_id), group);
     }
     
-    @Override
     public void delete(int id) {
         String sql = "DELETE FROM _Group WHERE group_id=" + id + ";";
         try {
@@ -99,27 +118,33 @@ public class GroupController extends Controllers {
         objects.remove(id);
     }
     
-    @Override
-    public void edit(int id, String[] content) {
+    public void edit(int id, String[] content, BufferedImage photo) 
+            throws IOException {
         /* --------- Content array contains ---------
             content[0] -> name
-            content[1] -> photo
-            content[2] -> maxAllowed
+            content[1] -> maxAllowed
         */
         
         String sql = "UPDATE _Group SET "
-            + "name='" + content[0] + "',"
-            + "photo='" + content[1] + "',"
-            + "maxAllowed='" + content[2] + "'"
-            + " WHERE group_id=" + id + ";";
+            + "name=?, photo=?, maxAllowed=? WHERE group_id=?";
         try {
-            ResultSet rs = DBManagement.getStatement().executeQuery(sql);
+            PreparedStatement prstmt;
+            prstmt = DBManagement.getConnection().prepareStatement(sql);
+            prstmt.setString(1,content[0]);
+            
+            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+            ImageIO.write(photo, "jpeg", photoStream);
+            InputStream inputStream = 
+                    new ByteArrayInputStream(photoStream.toByteArray());
+            prstmt.setBinaryStream(2,inputStream,
+                    photo.getHeight() * photo.getWidth());
+            prstmt.setInt(3,Integer.parseInt(content[1]));
+            
             System.out.println("Requested group was updated successfully");
-            rs.close();
+            prstmt.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible update the requested "
-                + "group");
+            System.err.println("Was not possible update the requested group");
             return;
         }
         
@@ -131,17 +156,15 @@ public class GroupController extends Controllers {
         Group group = (Group) objects.get(id);
         group.setGroup_id(id);
         group.setName(content[0]);
-        group.setPhoto(content[1]);
-        group.setMaxAllowed(Integer.parseInt(content[2]));
+        group.setPhoto(photo);
+        group.setMaxAllowed(Integer.parseInt(content[1]));
     }
     
-    @Override
     public void show() {
         objects.keySet().forEach((obj) -> {
             Group group = (Group) objects.get(obj);
             System.out.println("Group id: " + group.getGroup_id());
             System.out.println("Group name: " + group.getName());
-            System.out.println("Group photo: " + group.getPhoto());
             System.out.println("Group capacity: " + group.getMaxAllowed() + 
                 "\n");
         });
