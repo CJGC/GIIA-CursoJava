@@ -1,6 +1,6 @@
 package com.model;
 
-import java.io.FileInputStream;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -11,7 +11,7 @@ public class Group {
     private String name;
     private String owner;
     private int maxAllowed;
-    private FileInputStream photo;
+    private BufferedImage photo;
 
     public int getGroup_id() {
         return group_id;
@@ -45,11 +45,11 @@ public class Group {
         this.maxAllowed = maxAllowed;
     }
 
-    public FileInputStream getPhoto() {
+    public BufferedImage getPhoto() {
         return photo;
     }
 
-    public void setPhoto(FileInputStream photo) {
+    public void setPhoto(BufferedImage photo) {
         this.photo = photo;
     }
 }
