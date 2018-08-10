@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Person;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -60,6 +61,7 @@ public class PersonController {
             content[2] -> person's birthday
             content[3] -> foreign key (address_id)
         */
+        Exceptions.checkPersonData(content);
         LocalDate currentDate = LocalDate.now();
         LocalDate birthDay = LocalDate.parse(content[2]);
         int age = Period.between(birthDay, currentDate).getYears();
@@ -156,6 +158,7 @@ public class PersonController {
             content[2] -> person's birthday
             content[3] -> foreign key (address_id)
         */
+        Exceptions.checkPersonData(content);
         LocalDate currentDate = LocalDate.now();
         LocalDate birthDay = LocalDate.parse(content[2]);
         int age = Period.between(birthDay, currentDate).getYears();
