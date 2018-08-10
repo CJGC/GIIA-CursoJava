@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -39,7 +41,8 @@ public class PersonController {
                 person.setAge(rs.getInt("age"));
                 person.setBirthday(rs.getDate("birthday"));
                 InputStream IS = rs.getBinaryStream("photo");
-                BufferedImage photo = ImageIO.read(IS);
+                BufferedImage photo = null;
+                if(IS != null) photo = ImageIO.read(IS);
                 person.setPhoto(photo);
                 person.setAddress_id(rs.getInt("address_id"));
                 objects.put(person.getPerson_id(), person);
@@ -54,10 +57,13 @@ public class PersonController {
         /* --------- Content array contains ---------
             content[0] -> person's name
             content[1] -> person's surname
-            content[2] -> person's age
-            content[3] -> person's birthday
-            content[4] -> foreign key (address_id)
+            content[2] -> person's birthday
+            content[3] -> foreign key (address_id)
         */
+        LocalDate currentDate = LocalDate.now();
+        LocalDate birthDay = LocalDate.parse(content[2]);
+        int age = Period.between(birthDay, currentDate).getYears();
+        
         String sql = "INSERT INTO Person "
             + "(name,surname,age,birthday,photo,address_id) "
             + "VALUES (?,?,?,?,?,?);";
@@ -67,17 +73,20 @@ public class PersonController {
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,content[0]);
             prstmt.setString(2,content[1]);
-            prstmt.setInt(3,Integer.parseInt(content[2]));
-            prstmt.setDate(4, java.sql.Date.valueOf(content[3]));
+            prstmt.setInt(3,age);
+            prstmt.setDate(4, java.sql.Date.valueOf(content[2]));
             
-            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
-            ImageIO.write(photo, "jpeg", photoStream);
-            InputStream inputStream = 
-                    new ByteArrayInputStream(photoStream.toByteArray());
-            prstmt.setBinaryStream(5,inputStream,
-                    photo.getHeight() * photo.getWidth());
+            if(photo != null) {
+                ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+                ImageIO.write(photo, "jpeg", photoStream);
+                InputStream inputStream = 
+                        new ByteArrayInputStream(photoStream.toByteArray());
+                prstmt.setBinaryStream(5,inputStream,
+                        photo.getHeight() * photo.getWidth());
+            }
+            else prstmt.setBinaryStream(5,null);
             
-            prstmt.setInt(6,Integer.parseInt(content[4]));
+            prstmt.setInt(6,Integer.parseInt(content[3]));
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -93,7 +102,7 @@ public class PersonController {
             rs.last();
             person_id = rs.getInt("person_id");
             rs.close();
-            date = sdf.parse(content[3]);
+            date = sdf.parse(content[2]);
         }
         catch(SQLException e) {
             System.err.println("Was not possible perform person query");
@@ -112,10 +121,10 @@ public class PersonController {
         person.setPerson_id(person_id);
         person.setName(content[0]);
         person.setSurname(content[1]);
-        person.setAge(Integer.parseInt(content[2]));
+        person.setAge(age);
         person.setBirthday(date);
         person.setPhoto(photo);
-        person.setAddress_id(Integer.parseInt(content[4]));
+        person.setAddress_id(Integer.parseInt(content[3]));
         objects.put(Integer.toString(person_id), person);
     }
     
@@ -144,10 +153,12 @@ public class PersonController {
         /* --------- Content array contains ---------
             content[0] -> person's name
             content[1] -> person's surname
-            content[2] -> person's age
-            content[3] -> person's birthday
-            content[4] -> foreign key (address_id)
+            content[2] -> person's birthday
+            content[3] -> foreign key (address_id)
         */
+        LocalDate currentDate = LocalDate.now();
+        LocalDate birthDay = LocalDate.parse(content[2]);
+        int age = Period.between(birthDay, currentDate).getYears();
         
         String sql = "UPDATE Person SET "
             + "name=?, surname=?, age=?, birthday=?, photo=?, address_id=?"
@@ -157,22 +168,25 @@ public class PersonController {
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,content[0]);
             prstmt.setString(2,content[1]);
-            prstmt.setInt(3,Integer.parseInt(content[2]));
-            prstmt.setDate(4,java.sql.Date.valueOf(content[3]));
+            prstmt.setInt(3,age);
+            prstmt.setDate(4,java.sql.Date.valueOf(content[2]));
             
-            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
-            ImageIO.write(photo, "jpeg", photoStream);
-            InputStream inputStream = 
-                    new ByteArrayInputStream(photoStream.toByteArray());
-            prstmt.setBinaryStream(5,inputStream,
-                    photo.getHeight() * photo.getWidth());
+            if(photo != null) {
+                ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+                ImageIO.write(photo, "jpeg", photoStream);
+                InputStream inputStream = 
+                        new ByteArrayInputStream(photoStream.toByteArray());
+                prstmt.setBinaryStream(5,inputStream,
+                        photo.getHeight() * photo.getWidth());
+            }
+            else prstmt.setBinaryStream(5,null);
             
-            prstmt.setInt(6,Integer.parseInt(content[4]));
+            prstmt.setInt(6,Integer.parseInt(content[3]));
             prstmt.setInt(7, id);
             prstmt.executeUpdate();
             System.out.println("Requested person was updated successfully");
             prstmt.close();
-            date = sdf.parse(content[3]);
+            date = sdf.parse(content[2]);
         }
         catch(SQLException e) {
             System.err.println("Was not possible update the requested person");
@@ -192,10 +206,10 @@ public class PersonController {
         person.setPerson_id(id);
         person.setName(content[0]);
         person.setSurname(content[1]);
-        person.setAge(Integer.parseInt(content[2]));
+        person.setAge(age);
         person.setBirthday(date);
         person.setPhoto(photo);
-        person.setAddress_id(Integer.parseInt(content[4]));
+        person.setAddress_id(Integer.parseInt(content[3]));
     }
     
     public void show() {
@@ -205,7 +219,7 @@ public class PersonController {
             System.out.println("Person's name: " + person.getName());
             System.out.println("Person's surname: " + person.getSurname());
             System.out.println("Person's age: " + person.getAge());
-            System.out.println("Person's date: " + person.getBirthday());
+            System.out.println("Person's date: " + person.getBirthday().toString());
             System.out.println("Address id: " + person.getAddress_id() + "\n");
         });
     }
