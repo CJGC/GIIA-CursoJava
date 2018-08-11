@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Phone;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -34,7 +35,7 @@ public class PhoneController extends Controllers {
             content[1] -> countryCode
             content[2] -> foreign key (person id)
         */
-        
+        Exceptions.checkPhoneData(content);
         String sql = "INSERT INTO Phone (number,countryCode,person_id) "
                 + "VALUES (?,?,?);";
         int phone_id = -1;
@@ -105,7 +106,7 @@ public class PhoneController extends Controllers {
             content[1] -> countryCode
             content[2] -> foreign key (person id)
         */
-        
+        Exceptions.checkPhoneData(content);
         String sql = "UPDATE Phone SET "
             + "number='" + content[0] + "',"
             + "countryCode='" + content[1] + "',"
