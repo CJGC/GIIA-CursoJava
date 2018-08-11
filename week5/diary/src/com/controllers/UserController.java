@@ -30,27 +30,26 @@ public class UserController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> nickname
-            content[1] -> password
-            content[2] -> foreign key (person id)
-        */
         Exceptions.checkUserData(content);
+        String userNickname = content[0];
+        String userPassword = content[1];
+        int person_id = Integer.parseInt(content[2]);
+        
         String sql = "INSERT INTO User (nickname,password,person_id) "
                 + "VALUES (?,?,?);";
         int user_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setString(2,content[1]);
-            prstmt.setInt(3, Integer.parseInt(content[2]));
+            prstmt.setString(1,userNickname);
+            prstmt.setString(2,userPassword);
+            prstmt.setInt(3, person_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("User register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create user register");
             return;
         }
         
@@ -72,14 +71,19 @@ public class UserController extends Controllers {
 
         User user = new User();
         user.setUser_id(user_id);
-        user.setNickname(content[0]);
-        user.setPassword(content[1]);
-        user.setPerson_id(Integer.parseInt(content[2]));
+        user.setNickname(userNickname);
+        user.setPassword(userPassword);
+        user.setPerson_id(person_id);
         objects.put(Integer.toString(user_id), user);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("User map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM User WHERE user_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -91,26 +95,25 @@ public class UserController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("User map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> nickname
-            content[1] -> password
-            content[2] -> foreign key (person id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("User map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkUserData(content);
+        String userNickname = content[0];
+        String userPassword = content[1];
+        int person_id = Integer.parseInt(content[2]);
+        
         String sql = "UPDATE User SET "
-            + "nickname='" + content[0] + "',"
-            + "password='" + content[1] + "',"
-            + "person_id='" + content[2] + "'"
+            + "nickname='" + userNickname + "',"
+            + "password='" + userPassword + "',"
+            + "person_id='" + person_id + "'"
             + " WHERE user_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -122,16 +125,11 @@ public class UserController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("User map does not have the specified key!");
-            return;
-        }
-        
         User user = (User) objects.get(id);
         user.setUser_id(id);
-        user.setNickname(content[0]);
-        user.setPassword(content[1]);
-        user.setPerson_id(Integer.parseInt(content[2]));
+        user.setNickname(userNickname);
+        user.setPassword(userPassword);
+        user.setPerson_id(person_id);
     }
     
     @Override
