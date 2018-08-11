@@ -23,7 +23,7 @@ public class EmailController extends Controllers {
             }
         }
         catch(SQLException e) {
-            System.err.println("Error in sql query (from phone controller)!");
+            System.err.println("Error in sql query (from email controller)!");
         }
     }
     
@@ -34,20 +34,23 @@ public class EmailController extends Controllers {
             content[1] -> foreign key (person id)
         */
         Exceptions.checkEmailData(content);
+        String emailAddress = content[0];
+        int person_id = Integer.parseInt(content[1]);
+        
         String sql = "INSERT INTO Email (name,person_id) "
                 + "VALUES (?,?);";
         int email_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setString(1,emailAddress);
+            prstmt.setInt(2,person_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Email register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create email register");
             return;
         }
         
@@ -69,13 +72,18 @@ public class EmailController extends Controllers {
 
         Email email = new Email();
         email.setEmail_id(email_id);
-        email.setName(content[0]);
-        email.setPerson_id(Integer.parseInt(content[1]));
+        email.setName(emailAddress);
+        email.setPerson_id(person_id);
         objects.put(Integer.toString(email_id), email);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Email map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Email WHERE email_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -87,24 +95,23 @@ public class EmailController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Email map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> name
-            content[1] -> foreign key (person id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Email map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkEmailData(content);
+        String emailAddress = content[0];
+        int person_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE Email SET "
-            + "name='" + content[0] + "',"
-            + "person_id='" + content[1] + "'"
+            + "name='" + emailAddress + "',"
+            + "person_id='" + person_id + "'"
             + " WHERE email_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -116,15 +123,10 @@ public class EmailController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Email map does not have the specified key!");
-            return;
-        }
-        
         Email email = (Email) objects.get(id);
         email.setEmail_id(id);
-        email.setName(content[0]);
-        email.setPerson_id(Integer.parseInt(content[1]));
+        email.setName(emailAddress);
+        email.setPerson_id(person_id);
     }
     
     @Override
