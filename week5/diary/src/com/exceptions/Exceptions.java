@@ -68,11 +68,28 @@ public class Exceptions {
         }
         catch (IndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException("There are not enough data"
-                    + " inside content array!, error from person controller");
+                    + " inside content array!, error from user controller");
         }
         
         checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
         checkEntry(password,PASS_PATTERN,"Invalid format for password");
+        checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
+    }
+    
+    public static void checkRegisterData(String []content) {
+        String nickname;
+        String person_id;
+        
+        try {
+            nickname = content[0];
+            person_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from register controller");
+        }
+        
+        checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
 }
