@@ -30,25 +30,24 @@ public class UserGroupController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> group_id
-            content[1] -> user_id
-        */
         Exceptions.checkUserGroupData(content);
+        int group_id = Integer.parseInt(content[0]);
+        int user_id = Integer.parseInt(content[1]);
+        
         String sql = "INSERT INTO UserGroup (group_id,user_id) "
                 + "VALUES (?,?);";
         int userGroup_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setInt(1,Integer.parseInt(content[0]));
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setInt(1,group_id);
+            prstmt.setInt(2,user_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("UserGroup register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create userGroup register");
             return;
         }
         
@@ -70,13 +69,19 @@ public class UserGroupController extends Controllers {
 
         UserGroup userGroup = new UserGroup();
         userGroup.setUserGroup_id(userGroup_id);
-        userGroup.setGroup_id(Integer.parseInt(content[0]));
-        userGroup.setUser_id(Integer.parseInt(content[1]));
+        userGroup.setGroup_id(group_id);
+        userGroup.setUser_id(user_id);
         objects.put(Integer.toString(userGroup_id), userGroup);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("UserGroup map does not have the specified "
+                + "key!");
+            return;
+        }
+        
         String sql = "DELETE FROM UserGroup WHERE userGroup_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -89,25 +94,24 @@ public class UserGroupController extends Controllers {
             return;
         }
         
+        objects.remove(id);
+    }
+    
+    @Override
+    public void edit(int id, String[] content) {
         if(!objects.containsKey(id)) {
             System.err.println("UserGroup map does not have the specified "
                 + "key!");
             return;
         }
         
-        objects.remove(id);
-    }
-    
-    @Override
-    public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> group_id
-            content[1] -> user_id
-        */
         Exceptions.checkUserGroupData(content);
+        int group_id = Integer.parseInt(content[0]);
+        int user_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE UserGroup SET "
-            + "group_id='" + content[0] + "',"
-            + "user_id='" + content[1] + "'"
+            + "group_id='" + group_id + "',"
+            + "user_id='" + user_id + "'"
             + " WHERE userGroup_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -120,16 +124,10 @@ public class UserGroupController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("UserGroup map does not have the specified "
-                + "key!");
-            return;
-        }
-        
         UserGroup userGroup = (UserGroup) objects.get(id);
         userGroup.setUserGroup_id(id);
-        userGroup.setGroup_id(Integer.parseInt(content[0]));
-        userGroup.setUser_id(Integer.parseInt(content[1]));
+        userGroup.setGroup_id(group_id);
+        userGroup.setUser_id(user_id);
     }
     
     @Override
