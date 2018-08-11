@@ -201,4 +201,21 @@ public class Exceptions {
                 + "code");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
+    
+    public static void checkGroupData(String []content) {
+        String name;
+        String maxAllowed;
+        
+        try {
+            name = content[0];
+            maxAllowed = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from group controller");
+        }
+        
+        checkEntry(name,NAME_PATTERN,"Invalid format for group name");
+        checkEntry(maxAllowed,NUM_PATTERN,"Invalid format for number");
+    }
 }
