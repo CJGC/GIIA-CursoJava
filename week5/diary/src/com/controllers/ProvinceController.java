@@ -28,24 +28,23 @@ public class ProvinceController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> province name
-            content[1] -> foreign key (country id)
-        */
         Exceptions.checkProvinceData(content);
+        String provinceName = content[0];
+        int country_id = Integer.parseInt(content[1]);
+        
         String sql = "INSERT INTO Province (name,country_id) VALUES (?,?);";
         int province_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setString(1,provinceName);
+            prstmt.setInt(2,country_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Province register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create province register");
             return;
         }
         
@@ -67,13 +66,18 @@ public class ProvinceController extends Controllers {
 
         Province province = new Province();
         province.setProvince_id(province_id);
-        province.setName(content[0]);
-        province.setCountry_id(Integer.parseInt(content[1]));
+        province.setName(provinceName);
+        province.setCountry_id(country_id);
         objects.put(Integer.toString(province_id), province);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Province map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Province WHERE province_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -86,24 +90,23 @@ public class ProvinceController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Province map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> province name
-            content[1] -> foreign key (country id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Province map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkProvinceData(content);
+        String provinceName = content[0];
+        int country_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE Province SET "
-            + "name='" + content[0] + "',"
-            + "country_id='" + content[1] + "'"
+            + "name='" + provinceName + "',"
+            + "country_id='" + country_id + "'"
             + " WHERE province_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -115,15 +118,10 @@ public class ProvinceController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Province map does not have the specified key!");
-            return;
-        }
-        
         Province province = (Province) objects.get(id);
         province.setProvince_id(id);
-        province.setName(content[0]);
-        province.setCountry_id(Integer.parseInt(content[1]));
+        province.setName(provinceName);
+        province.setCountry_id(country_id);
     }
     
     @Override
