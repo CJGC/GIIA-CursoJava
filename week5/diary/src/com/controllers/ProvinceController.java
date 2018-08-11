@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Province;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -31,7 +32,7 @@ public class ProvinceController extends Controllers {
             content[0] -> province name
             content[1] -> foreign key (country id)
         */
-        
+        Exceptions.checkProvinceData(content);
         String sql = "INSERT INTO Province (name,country_id) VALUES (?,?);";
         int province_id = -1;
         try {
@@ -99,7 +100,7 @@ public class ProvinceController extends Controllers {
             content[0] -> province name
             content[1] -> foreign key (country id)
         */
-        
+        Exceptions.checkProvinceData(content);
         String sql = "UPDATE Province SET "
             + "name='" + content[0] + "',"
             + "country_id='" + content[1] + "'"

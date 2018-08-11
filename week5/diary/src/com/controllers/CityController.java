@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.City;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -31,7 +32,7 @@ public class CityController extends Controllers {
             content[0] -> city name
             content[1] -> foreign key (province id)
         */
-        
+        Exceptions.checkCityData(content);
         String sql = "INSERT INTO City (name,province_id) VALUES (?,?);";
         int city_id = -1;
         try {
@@ -99,7 +100,7 @@ public class CityController extends Controllers {
             content[0] -> city name
             content[1] -> foreign key (province id)
         */
-        
+        Exceptions.checkCityData(content);
         String sql = "UPDATE City SET "
             + "name='" + content[0] + "',"
             + "province_id='" + content[1] + "'"
