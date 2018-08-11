@@ -46,6 +46,57 @@ public class Exceptions {
         checkEntry(countryName,NAME_PATTERN,"Invalid format for name");
     }
     
+    public static void checkProvinceData(String []content) {
+        String provinceName;
+        String country_id;
+        
+        try {
+            provinceName = content[0];
+            country_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from province controller");
+        }
+        
+        checkEntry(provinceName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(country_id,NUM_PATTERN,"Invalid format for number");
+    }
+
+    public static void checkCityData(String []content) {
+        String cityName;
+        String province_id;
+        
+        try {
+            cityName = content[0];
+            province_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from city controller");
+        }
+        
+        checkEntry(cityName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(province_id,NUM_PATTERN,"Invalid format for number");
+    }
+    
+    public static void checkAddressData(String []content) {
+        String addressName;
+        String city_id;
+        
+        try {
+            addressName = content[0];
+            city_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from address controller");
+        }
+        
+        checkEntry(addressName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(city_id,NUM_PATTERN,"Invalid format for number");
+    }
+    
     public static void checkPersonData(String []content) {
         String personName;
         String personSurname;
