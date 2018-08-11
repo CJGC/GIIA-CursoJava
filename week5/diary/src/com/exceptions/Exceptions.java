@@ -49,7 +49,7 @@ public class Exceptions {
                     + " inside content array!, error from country controller");
         }
         
-        checkEntry(countryName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(countryName,NAME_PATTERN,"Invalid format for country name");
     }
     
     public static void checkProvinceData(String []content) {
@@ -65,7 +65,8 @@ public class Exceptions {
                     + " inside content array!, error from province controller");
         }
         
-        checkEntry(provinceName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(provinceName,NAME_PATTERN,
+                "Invalid format for province name");
         checkEntry(country_id,NUM_PATTERN,"Invalid format for number");
     }
 
@@ -82,16 +83,16 @@ public class Exceptions {
                     + " inside content array!, error from city controller");
         }
         
-        checkEntry(cityName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(cityName,NAME_PATTERN,"Invalid format for city name");
         checkEntry(province_id,NUM_PATTERN,"Invalid format for number");
     }
     
     public static void checkAddressData(String []content) {
-        String addressName;
+        String addressValue;
         String city_id;
         
         try {
-            addressName = content[0];
+            addressValue = content[0];
             city_id = content[1];
         }
         catch (IndexOutOfBoundsException e) {
@@ -99,7 +100,8 @@ public class Exceptions {
                     + " inside content array!, error from address controller");
         }
         
-        checkEntry(addressName,NAME_PATTERN,"Invalid format for name");
+        checkEntry(addressValue,NAME_PATTERN,
+                "Invalid format for address value");
         checkEntry(city_id,NUM_PATTERN,"Invalid format for number");
     }
     
@@ -120,9 +122,11 @@ public class Exceptions {
                     + " inside content array!, error from person controller");
         }
         
-        checkEntry(personName,NAME_PATTERN,"Invalid format for name");
-        checkEntry(personSurname,SURNAME_PATTERN,"Invalid format for surname");
-        checkEntry(personBirthday,DATE_PATTERN,"Invalid format for date");
+        checkEntry(personName,NAME_PATTERN,"Invalid format for person's name");
+        checkEntry(personSurname,SURNAME_PATTERN,
+                "Invalid format for person's surname");
+        checkEntry(personBirthday,DATE_PATTERN,
+                "Invalid format for person's date");
         if(address_id != "")
             checkEntry(address_id,NUM_PATTERN,"Invalid format for number");
     }
@@ -142,8 +146,9 @@ public class Exceptions {
                     + " inside content array!, error from user controller");
         }
         
-        checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
-        checkEntry(password,PASS_PATTERN,"Invalid format for password");
+        checkEntry(nickname,NICKNAME_PATTERN,
+                "Invalid format for user's nickname");
+        checkEntry(password,PASS_PATTERN,"Invalid format for user's password");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
     
@@ -160,7 +165,8 @@ public class Exceptions {
                     + " inside content array!, error from register controller");
         }
         
-        checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
+        checkEntry(nickname,NICKNAME_PATTERN,
+                "Invalid format for register nickname");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
     
