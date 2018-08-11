@@ -30,19 +30,17 @@ public class RegisterController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> nickname
-            content[1] -> foreign key (person id)
-        */
         Exceptions.checkRegisterData(content);
+        String registerNickname = content[0];
+        int person_id = Integer.parseInt(content[1]);
         String sql = "INSERT INTO Register (nickname,person_id) "
                 + "VALUES (?,?);";
         int register_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setString(1,registerNickname);
+            prstmt.setInt(2,person_id);
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -70,13 +68,18 @@ public class RegisterController extends Controllers {
 
         Register register = new Register();
         register.setRegister_id(register_id);
-        register.setNickname(content[0]);
-        register.setPerson_id(Integer.parseInt(content[1]));
+        register.setNickname(registerNickname);
+        register.setPerson_id(person_id);
         objects.put(Integer.toString(register_id), register);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Register map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Register WHERE register_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -89,24 +92,23 @@ public class RegisterController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Register map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> nickname
-            content[1] -> foreign key (person id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Register map does not have the specified key!");
+            return;
+        }
+
         Exceptions.checkRegisterData(content);
+        String registerNickname = content[0];
+        int person_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE Register SET "
-            + "nickname='" + content[0] + "',"
-            + "person_id='" + content[1] + "'"
+            + "nickname='" + registerNickname + "',"
+            + "person_id='" + person_id + "'"
             + " WHERE register_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -119,15 +121,10 @@ public class RegisterController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Register map does not have the specified key!");
-            return;
-        }
-        
         Register register = (Register) objects.get(id);
         register.setRegister_id(id);
-        register.setNickname(content[0]);
-        register.setPerson_id(Integer.parseInt(content[1]));
+        register.setNickname(registerNickname);
+        register.setPerson_id(person_id);
     }
     
     @Override
