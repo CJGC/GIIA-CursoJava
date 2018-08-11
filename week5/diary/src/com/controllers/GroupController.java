@@ -43,18 +43,16 @@ public class GroupController {
     }
     
     public void create(String[] content,BufferedImage photo) throws IOException{
-        /* --------- Content array contains ---------
-            content[0] -> name
-            content[1] -> maxAllowed
-        */
         Exceptions.checkGroupData(content);
+        String groupName = content[0];
+        int maxAllowed = Integer.parseInt(content[1]);
         String sql = "INSERT INTO _Group (name,photo,maxAllowed) "
                 + "VALUES (?,?,?);";
         int group_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
+            prstmt.setString(1,groupName);
             
             if(photo != null) {
                 ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
@@ -67,13 +65,13 @@ public class GroupController {
             }
             else prstmt.setBinaryStream(2,null);
             
-            prstmt.setInt(3,Integer.parseInt(content[1]));
+            prstmt.setInt(3,maxAllowed);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Group register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create group register");
             return;
         }
         
@@ -95,13 +93,18 @@ public class GroupController {
 
         Group group = new Group();
         group.setGroup_id(group_id);
-        group.setName(content[0]);
+        group.setName(groupName);
         group.setPhoto(photo);
-        group.setMaxAllowed(Integer.parseInt(content[1]));
+        group.setMaxAllowed(maxAllowed);
         objects.put(Integer.toString(group_id), group);
     }
     
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Group map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM _Group WHERE group_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -114,27 +117,26 @@ public class GroupController {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Group map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     public void edit(int id, String[] content, BufferedImage photo) 
             throws IOException {
-        /* --------- Content array contains ---------
-            content[0] -> name
-            content[1] -> maxAllowed
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Group map does not have the specified key!");
+            return;
+        }
+
         Exceptions.checkGroupData(content);
+        String groupName = content[0];
+        int maxAllowed = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE _Group SET "
             + "name=?, photo=?, maxAllowed=? WHERE group_id=?";
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
+            prstmt.setString(1,groupName);
             
             if(photo != null) {
                 ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
@@ -146,7 +148,7 @@ public class GroupController {
             }
             else prstmt.setBinaryStream(2,null);
             
-            prstmt.setInt(3,Integer.parseInt(content[1]));
+            prstmt.setInt(3,maxAllowed);
             prstmt.setInt(4, id);
             prstmt.executeUpdate();
             prstmt.close();
@@ -157,16 +159,11 @@ public class GroupController {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Group map does not have the specified key!");
-            return;
-        }
-        
         Group group = (Group) objects.get(id);
         group.setGroup_id(id);
-        group.setName(content[0]);
+        group.setName(groupName);
         group.setPhoto(photo);
-        group.setMaxAllowed(Integer.parseInt(content[1]));
+        group.setMaxAllowed(maxAllowed);
     }
     
     public void show() {
