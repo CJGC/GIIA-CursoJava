@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Register;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -33,7 +34,7 @@ public class RegisterController extends Controllers {
             content[0] -> nickname
             content[1] -> foreign key (person id)
         */
-        
+        Exceptions.checkRegisterData(content);
         String sql = "INSERT INTO Register (nickname,person_id) "
                 + "VALUES (?,?);";
         int register_id = -1;
@@ -102,7 +103,7 @@ public class RegisterController extends Controllers {
             content[0] -> nickname
             content[1] -> foreign key (person id)
         */
-        
+        Exceptions.checkRegisterData(content);
         String sql = "UPDATE Register SET "
             + "nickname='" + content[0] + "',"
             + "person_id='" + content[1] + "'"
