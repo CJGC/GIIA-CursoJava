@@ -27,22 +27,21 @@ public class CountryController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> country name
-        */
         Exceptions.checkCountryData(content);
+        String countryName = content[0];
+        
         String sql = "INSERT INTO Country (name) VALUES (?);";
         int country_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
+            prstmt.setString(1,countryName);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Country register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible to create register");
+            System.err.println("Was not possible to create country register");
             return;
         }
         
@@ -58,18 +57,23 @@ public class CountryController extends Controllers {
         }
         
         if(country_id == -1) {
-            System.err.println("Error capturing country_id");
+            System.err.println("Error capturing country id");
             return;
         }
 
         Country country = new Country();
         country.setCountry_id(country_id);
-        country.setName(content[0]);
+        country.setName(countryName);
         objects.put(Integer.toString(country_id), country);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Country map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Country WHERE country_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -78,12 +82,7 @@ public class CountryController extends Controllers {
         }
         catch(SQLException e) {
             System.err.println("Was not possible delete the requested "
-                    + "country id");
-            return;
-        }
-        
-        if(!objects.containsKey(id)) {
-            System.err.println("Country map does not have the specified key!");
+                    + "country");
             return;
         }
         
@@ -92,11 +91,15 @@ public class CountryController extends Controllers {
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> country name
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Country map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkCountryData(content);
-        String sql = "UPDATE Country SET name='" + content[0] + "' WHERE "
+        String countryName = content[0];
+        
+        String sql = "UPDATE Country SET name='" + countryName + "' WHERE "
             + "country_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -108,14 +111,9 @@ public class CountryController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Country map does not have the specified key!");
-            return;
-        }
-        
         Country country = (Country) objects.get(id);
         country.setCountry_id(id);
-        country.setName(content[0]);
+        country.setName(countryName);
 }
     
     @Override
