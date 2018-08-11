@@ -14,6 +14,9 @@ public class Exceptions {
     private final static String NUM_REGEX = "[0-9]+";
     private final static String PASS_REGEX = "([a-z]+d+[@#$%]+[A-Z]*){6,16}";
     private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@]+";
+    private final static String PHONE_REGEX = "[0-9]{1,20}";
+    private final static String COUN_COD_REGEX = "^\\([0-9]{1,2}\\)$";
+    
     
     private final static Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
     private final static Pattern SURNAME_PATTERN = 
@@ -24,6 +27,9 @@ public class Exceptions {
     private final static Pattern PASS_PATTERN = Pattern.compile(PASS_REGEX);
     private final static Pattern NICKNAME_PATTERN = 
             Pattern.compile(NICKNAME_REGEX);
+    private final static Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
+    private final static Pattern COUN_COD_PATTERN = 
+            Pattern.compile(COUN_COD_REGEX);
     
     private static void checkEntry(String entry,Pattern pattern,String message)
     {
@@ -171,8 +177,28 @@ public class Exceptions {
                     + " inside content array!, error from email controller");
         }
         
-        checkEntry(emailAddress,EMAIL_PATTERN,"Invalid format for email "
-                + "address");
+        checkEntry(emailAddress,EMAIL_PATTERN,"Invalid format for email ");
+        checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
+    }
+    
+    public static void checkPhoneData(String []content) {
+        String number;
+        String countryCode;
+        String person_id;
+        
+        try {
+            number = content[0];
+            countryCode = content[1];
+            person_id = content[2];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from phone controller");
+        }
+        
+        checkEntry(number,PHONE_PATTERN,"Invalid format for phone number");
+        checkEntry(countryCode,COUN_COD_PATTERN,"Invalid format for country "
+                + "code");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
 }
