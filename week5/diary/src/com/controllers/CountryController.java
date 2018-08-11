@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Country;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -29,7 +30,7 @@ public class CountryController extends Controllers {
         /* --------- Content array contains ---------
             content[0] -> country name
         */
-        
+        Exceptions.checkCountryData(content);
         String sql = "INSERT INTO Country (name) VALUES (?);";
         int country_id = -1;
         try {
@@ -94,7 +95,7 @@ public class CountryController extends Controllers {
         /* --------- Content array contains ---------
             content[0] -> country name
         */
-        
+        Exceptions.checkCountryData(content);
         String sql = "UPDATE Country SET name='" + content[0] + "' WHERE "
             + "country_id=" + id + ";";
         try {
