@@ -71,7 +71,7 @@ public class RegisterGroupController extends Controllers {
         registerGroup.setRegisterGroup_id(registerGroup_id);
         registerGroup.setGroup_id(group_id);
         registerGroup.setRegister_id(register_id);
-        objects.put(Integer.toString(registerGroup_id), registerGroup);
+        objects.put(registerGroup_id, registerGroup);
     }
     
     @Override

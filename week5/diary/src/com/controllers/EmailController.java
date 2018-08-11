@@ -74,7 +74,7 @@ public class EmailController extends Controllers {
         email.setEmail_id(email_id);
         email.setName(emailAddress);
         email.setPerson_id(person_id);
-        objects.put(Integer.toString(email_id), email);
+        objects.put(email_id, email);
     }
     
     @Override

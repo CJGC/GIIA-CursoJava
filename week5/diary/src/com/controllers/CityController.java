@@ -68,7 +68,7 @@ public class CityController extends Controllers {
         city.setCity_id(city_id);
         city.setName(cityName);
         city.setProvince_id(province_id);
-        objects.put(Integer.toString(city_id), city);
+        objects.put(city_id, city);
     }
     
     @Override

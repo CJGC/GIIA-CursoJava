@@ -74,7 +74,7 @@ public class PhoneController extends Controllers {
         phone.setNumber(phoneNumber);
         phone.setCountryCode(countryCode);
         phone.setPerson_id(person_id);
-        objects.put(Integer.toString(phone_id), phone);
+        objects.put(phone_id, phone);
     }
     
     @Override

@@ -129,7 +129,7 @@ public class PersonController {
         person.setBirthday(date);
         person.setPhoto(photo);
         if(content[3] != "") person.setAddress_id(Integer.parseInt(content[3]));
-        objects.put(Integer.toString(person_id), person);
+        objects.put(person_id, person);
     }
     
     public void delete(int id) {

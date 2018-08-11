@@ -70,7 +70,7 @@ public class RegisterController extends Controllers {
         register.setRegister_id(register_id);
         register.setNickname(registerNickname);
         register.setPerson_id(person_id);
-        objects.put(Integer.toString(register_id), register);
+        objects.put(register_id, register);
     }
     
     @Override

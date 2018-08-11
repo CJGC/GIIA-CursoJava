@@ -71,7 +71,7 @@ public class UserGroupController extends Controllers {
         userGroup.setUserGroup_id(userGroup_id);
         userGroup.setGroup_id(group_id);
         userGroup.setUser_id(user_id);
-        objects.put(Integer.toString(userGroup_id), userGroup);
+        objects.put(userGroup_id, userGroup);
     }
     
     @Override

@@ -64,7 +64,7 @@ public class CountryController extends Controllers {
         Country country = new Country();
         country.setCountry_id(country_id);
         country.setName(countryName);
-        objects.put(Integer.toString(country_id), country);
+        objects.put(country_id, country);
     }
     
     @Override

@@ -68,7 +68,7 @@ public class ProvinceController extends Controllers {
         province.setProvince_id(province_id);
         province.setName(provinceName);
         province.setCountry_id(country_id);
-        objects.put(Integer.toString(province_id), province);
+        objects.put(province_id, province);
     }
     
     @Override

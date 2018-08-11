@@ -74,7 +74,7 @@ public class UserController extends Controllers {
         user.setNickname(userNickname);
         user.setPassword(userPassword);
         user.setPerson_id(person_id);
-        objects.put(Integer.toString(user_id), user);
+        objects.put(user_id, user);
     }
     
     @Override

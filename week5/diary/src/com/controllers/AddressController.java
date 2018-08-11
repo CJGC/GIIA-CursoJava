@@ -68,7 +68,7 @@ public class AddressController extends Controllers {
         address.setAddress_id(address_id);
         address.setName(addressValue);
         address.setCity_id(city_id);
-        objects.put(Integer.toString(address_id), address);
+        objects.put(address_id, address);
     }
     
     @Override

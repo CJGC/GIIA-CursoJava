@@ -96,7 +96,7 @@ public class GroupController {
         group.setName(groupName);
         group.setPhoto(photo);
         group.setMaxAllowed(maxAllowed);
-        objects.put(Integer.toString(group_id), group);
+        objects.put(group_id, group);
     }
     
     public void delete(int id) {
