@@ -218,4 +218,40 @@ public class Exceptions {
         checkEntry(name,NAME_PATTERN,"Invalid format for group name");
         checkEntry(maxAllowed,NUM_PATTERN,"Invalid format for number");
     }
+    
+    public static void checkUserGroupData(String []content) {
+        String group_id;
+        String user_id;
+        
+        try {
+            group_id = content[0];
+            user_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from user group "
+                    + "controller");
+        }
+        
+        checkEntry(group_id,NUM_PATTERN,"Invalid format for number");
+        checkEntry(user_id,NUM_PATTERN,"Invalid format for number");
+    }
+
+    public static void checkRegisterGroupData(String []content) {
+        String group_id;
+        String register_id;
+        
+        try {
+            group_id = content[0];
+            register_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from register group "
+                    + "controller");
+        }
+        
+        checkEntry(group_id,NUM_PATTERN,"Invalid format for number");
+        checkEntry(register_id,NUM_PATTERN,"Invalid format for number");
+    }
 }
