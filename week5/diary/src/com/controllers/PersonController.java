@@ -21,14 +21,14 @@ import javax.imageio.ImageIO;
  */
 public class PersonController {
         
-    private final String pattern;
+    private final String datePattern;
     private final SimpleDateFormat sdf;
     private Date date;
     private HashMap objects;
     
     public PersonController() throws IOException {
-        pattern = "yyyy-mm-dd";
-        sdf = new SimpleDateFormat(pattern);
+        datePattern = "yyyy-mm-dd";
+        sdf = new SimpleDateFormat(datePattern);
         objects = new HashMap();
     
         String sql = "SELECT * FROM Person;";
@@ -56,15 +56,15 @@ public class PersonController {
     
     public void create(String[] content,BufferedImage photo) throws IOException{
         /* --------- Content array contains ---------
-            content[0] -> person's name
-            content[1] -> person's surname
-            content[2] -> person's birthday
             content[3] -> foreign key (address_id)
         */
         Exceptions.checkPersonData(content);
+        String personName = content[0];
+        String personSurname = content[1];
+        String personBirthDay = content[2];
         LocalDate currentDate = LocalDate.now();
-        LocalDate birthDay = LocalDate.parse(content[2]);
-        int age = Period.between(birthDay, currentDate).getYears();
+        LocalDate birthDay = LocalDate.parse(personBirthDay);
+        int personAge = Period.between(birthDay, currentDate).getYears();
         
         String sql = "INSERT INTO Person "
             + "(name,surname,age,birthday,photo,address_id) "
@@ -73,10 +73,10 @@ public class PersonController {
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setString(2,content[1]);
-            prstmt.setInt(3,age);
-            prstmt.setDate(4, java.sql.Date.valueOf(content[2]));
+            prstmt.setString(1,personName);
+            prstmt.setString(2,personSurname);
+            prstmt.setInt(3,personAge);
+            prstmt.setDate(4, java.sql.Date.valueOf(personBirthDay));
             
             if(photo != null) {
                 ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
@@ -93,10 +93,10 @@ public class PersonController {
             
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Person register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create person register");
             return;
         }
         
@@ -106,7 +106,7 @@ public class PersonController {
             rs.last();
             person_id = rs.getInt("person_id");
             rs.close();
-            date = sdf.parse(content[2]);
+            date = sdf.parse(personBirthDay);
         }
         catch(SQLException e) {
             System.err.println("Was not possible perform person query");
@@ -123,9 +123,9 @@ public class PersonController {
 
         Person person = new Person();
         person.setPerson_id(person_id);
-        person.setName(content[0]);
-        person.setSurname(content[1]);
-        person.setAge(age);
+        person.setName(personName);
+        person.setSurname(personSurname);
+        person.setAge(personAge);
         person.setBirthday(date);
         person.setPhoto(photo);
         if(content[3] != "") person.setAddress_id(Integer.parseInt(content[3]));
@@ -133,6 +133,11 @@ public class PersonController {
     }
     
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Person map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Person WHERE person_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -144,26 +149,26 @@ public class PersonController {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Person map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     public void edit(int id, String[] content,BufferedImage photo) 
             throws IOException {
         /* --------- Content array contains ---------
-            content[0] -> person's name
-            content[1] -> person's surname
-            content[2] -> person's birthday
             content[3] -> foreign key (address_id)
         */
+        if(!objects.containsKey(id)) {
+            System.err.println("Person map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkPersonData(content);
+        String personName = content[0];
+        String personSurname = content[1];
+        String personBirthDay = content[2];
         LocalDate currentDate = LocalDate.now();
-        LocalDate birthDay = LocalDate.parse(content[2]);
-        int age = Period.between(birthDay, currentDate).getYears();
+        LocalDate birthDay = LocalDate.parse(personBirthDay);
+        int personAge = Period.between(birthDay, currentDate).getYears();
         
         String sql = "UPDATE Person SET "
             + "name=?, surname=?, age=?, birthday=?, photo=?, address_id=?"
@@ -171,10 +176,10 @@ public class PersonController {
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setString(2,content[1]);
-            prstmt.setInt(3,age);
-            prstmt.setDate(4,java.sql.Date.valueOf(content[2]));
+            prstmt.setString(1,personName);
+            prstmt.setString(2,personSurname);
+            prstmt.setInt(3,personAge);
+            prstmt.setDate(4,java.sql.Date.valueOf(personBirthDay));
             
             if(photo != null) {
                 ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
@@ -193,7 +198,7 @@ public class PersonController {
             prstmt.executeUpdate();
             System.out.println("Requested person was updated successfully");
             prstmt.close();
-            date = sdf.parse(content[2]);
+            date = sdf.parse(personBirthDay);
         }
         catch(SQLException e) {
             System.err.println("Was not possible update the requested person");
@@ -204,16 +209,11 @@ public class PersonController {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Person map does not have the specified key!");
-            return;
-        }
-        
         Person person = (Person) objects.get(id);
         person.setPerson_id(id);
-        person.setName(content[0]);
-        person.setSurname(content[1]);
-        person.setAge(age);
+        person.setName(personName);
+        person.setSurname(personSurname);
+        person.setAge(personAge);
         person.setBirthday(date);
         person.setPhoto(photo);
         if(content[3] != "") person.setAddress_id(Integer.parseInt(content[3]));
