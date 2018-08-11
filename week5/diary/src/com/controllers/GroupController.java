@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Group;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -29,7 +30,8 @@ public class GroupController {
                 group.setGroup_id(rs.getInt("group_id"));
                 group.setName(rs.getString("name"));
                 InputStream IS = rs.getBinaryStream("photo");
-                BufferedImage photo = ImageIO.read(IS);
+                BufferedImage photo = null;
+                if(IS != null) photo = ImageIO.read(IS);
                 group.setPhoto(photo);
                 group.setMaxAllowed(rs.getInt("maxAllowed"));
                 objects.put(group.getGroup_id(), group);
@@ -45,7 +47,7 @@ public class GroupController {
             content[0] -> name
             content[1] -> maxAllowed
         */
-        
+        Exceptions.checkGroupData(content);
         String sql = "INSERT INTO _Group (name,photo,maxAllowed) "
                 + "VALUES (?,?,?);";
         int group_id = -1;
@@ -54,13 +56,16 @@ public class GroupController {
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,content[0]);
             
-            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
-            ImageIO.write(photo, "jpeg", photoStream);
-            InputStream inputStream = 
-                    new ByteArrayInputStream(photoStream.toByteArray());
-            
-            prstmt.setBinaryStream(2,inputStream,
-                    photo.getHeight() * photo.getWidth());
+            if(photo != null) {
+                ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+                ImageIO.write(photo, "jpeg", photoStream);
+                InputStream inputStream = 
+                        new ByteArrayInputStream(photoStream.toByteArray());
+
+                prstmt.setBinaryStream(2,inputStream,
+                        photo.getHeight() * photo.getWidth());
+            }
+            else prstmt.setBinaryStream(2,null);
             
             prstmt.setInt(3,Integer.parseInt(content[1]));
             prstmt.executeUpdate();
@@ -123,7 +128,7 @@ public class GroupController {
             content[0] -> name
             content[1] -> maxAllowed
         */
-        
+        Exceptions.checkGroupData(content);
         String sql = "UPDATE _Group SET "
             + "name=?, photo=?, maxAllowed=? WHERE group_id=?";
         try {
@@ -131,12 +136,16 @@ public class GroupController {
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,content[0]);
             
-            ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
-            ImageIO.write(photo, "jpeg", photoStream);
-            InputStream inputStream = 
-                    new ByteArrayInputStream(photoStream.toByteArray());
-            prstmt.setBinaryStream(2,inputStream,
-                    photo.getHeight() * photo.getWidth());
+            if(photo != null) {
+                ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+                ImageIO.write(photo, "jpeg", photoStream);
+                InputStream inputStream = 
+                        new ByteArrayInputStream(photoStream.toByteArray());
+                prstmt.setBinaryStream(2,inputStream,
+                        photo.getHeight() * photo.getWidth());
+            }
+            else prstmt.setBinaryStream(2,null);
+            
             prstmt.setInt(3,Integer.parseInt(content[1]));
             prstmt.setInt(4, id);
             prstmt.executeUpdate();
