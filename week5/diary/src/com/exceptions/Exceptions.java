@@ -157,4 +157,22 @@ public class Exceptions {
         checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
+    
+    public static void checkEmailData(String []content) {
+        String emailAddress;
+        String person_id;
+        
+        try {
+            emailAddress = content[0];
+            person_id = content[1];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from email controller");
+        }
+        
+        checkEntry(emailAddress,EMAIL_PATTERN,"Invalid format for email "
+                + "address");
+        checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
+    }
 }
