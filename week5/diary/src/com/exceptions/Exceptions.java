@@ -13,8 +13,8 @@ public class Exceptions {
     private final static String DATE_REGEX = "[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}";
     private final static String ADDRESS_REGEX = "[a-zA-Z#\\-0-9\\s]{1,150}";
     private final static String NUM_REGEX = "[0-9]+";
-    private final static String PASS_REGEX = "([a-z]+d+[@#$%]+[A-Z]*){6,16}";
-    private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@]+";
+    private final static String PASS_REGEX = "([a-z0-9@#$%A-Z]){6,16}";
+    private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@\\s]+";
     private final static String PHONE_REGEX = "[0-9]{1,20}";
     private final static String COUN_COD_REGEX = "^\\([0-9]{1,2}\\)$";
     
