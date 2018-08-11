@@ -30,25 +30,24 @@ public class RegisterGroupController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> group_id
-            content[1] -> register_id
-        */
         Exceptions.checkRegisterGroupData(content);
+        int group_id = Integer.parseInt(content[0]);
+        int register_id = Integer.parseInt(content[1]);
+        
         String sql = "INSERT INTO RegisterGroup (group_id,register_id) "
                 + "VALUES (?,?);";
         int registerGroup_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setInt(1,Integer.parseInt(content[0]));
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setInt(1,group_id);
+            prstmt.setInt(2,register_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Register group was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create register group");
             return;
         }
         
@@ -70,13 +69,19 @@ public class RegisterGroupController extends Controllers {
 
         RegisterGroup registerGroup = new RegisterGroup();
         registerGroup.setRegisterGroup_id(registerGroup_id);
-        registerGroup.setGroup_id(Integer.parseInt(content[0]));
-        registerGroup.setRegister_id(Integer.parseInt(content[1]));
+        registerGroup.setGroup_id(group_id);
+        registerGroup.setRegister_id(register_id);
         objects.put(Integer.toString(registerGroup_id), registerGroup);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("RegisterGroup map does not have the specified "
+                + "key!");
+            return;
+        }
+        
         String sql = "DELETE FROM RegisterGroup WHERE registerGroup_id=" 
             + id + ";";
         try {
@@ -91,25 +96,24 @@ public class RegisterGroupController extends Controllers {
             return;
         }
         
+        objects.remove(id);
+    }
+    
+    @Override
+    public void edit(int id, String[] content) {
         if(!objects.containsKey(id)) {
             System.err.println("RegisterGroup map does not have the specified "
                 + "key!");
             return;
         }
         
-        objects.remove(id);
-    }
-    
-    @Override
-    public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> group_id
-            content[1] -> register_id
-        */
         Exceptions.checkRegisterGroupData(content);
+        int group_id = Integer.parseInt(content[0]);
+        int register_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE RegisterGroup SET "
-            + "group_id='" + content[0] + "',"
-            + "register_id='" + content[1] + "'"
+            + "group_id='" + group_id + "',"
+            + "register_id='" + register_id + "'"
             + " WHERE registerGroup_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -125,8 +129,8 @@ public class RegisterGroupController extends Controllers {
         
         RegisterGroup registerGroup = (RegisterGroup) objects.get(id);
         registerGroup.setRegisterGroup_id(id);
-        registerGroup.setGroup_id(Integer.parseInt(content[0]));
-        registerGroup.setRegister_id(Integer.parseInt(content[1]));
+        registerGroup.setGroup_id(group_id);
+        registerGroup.setRegister_id(register_id);
     }
     
     @Override
