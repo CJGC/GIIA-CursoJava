@@ -32,6 +32,20 @@ public class Exceptions {
             throw new IllegalArgumentException(message);
     }
     
+    public static void checkCountryData(String []content) {
+        String countryName;
+        
+        try {
+            countryName = content[0];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from country controller");
+        }
+        
+        checkEntry(countryName,NAME_PATTERN,"Invalid format for name");
+    }
+    
     public static void checkPersonData(String []content) {
         String personName;
         String personSurname;
