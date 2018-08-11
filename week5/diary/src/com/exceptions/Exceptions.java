@@ -12,6 +12,8 @@ public class Exceptions {
     private final static String EMAIL_REGEX = "^[\\w_\\.]+@[a-zA-Z]+\\.com$";
     private final static String DATE_REGEX = "[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}";
     private final static String NUM_REGEX = "[0-9]+";
+    private final static String PASS_REGEX = "([a-z]+d+[@#$%]+[A-Z]*){6,16}";
+    private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@]+";
     
     private final static Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
     private final static Pattern SURNAME_PATTERN = 
@@ -19,6 +21,9 @@ public class Exceptions {
     private final static Pattern DATE_PATTERN = Pattern.compile(DATE_REGEX);
     private final static Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private final static Pattern NUM_PATTERN = Pattern.compile(NUM_REGEX);
+    private final static Pattern PASS_PATTERN = Pattern.compile(PASS_REGEX);
+    private final static Pattern NICKNAME_PATTERN = 
+            Pattern.compile(NICKNAME_REGEX);
     
     private static void checkEntry(String entry,Pattern pattern,String message)
     {
@@ -31,13 +36,13 @@ public class Exceptions {
         String personName;
         String personSurname;
         String personBirthday;
-        String foreignKey;
+        String address_id;
         
         try {
             personName = content[0];
             personSurname = content[1];
             personBirthday = content[2];
-            foreignKey = content[3];
+            address_id = content[3];
         }
         catch (IndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException("There are not enough data"
@@ -47,6 +52,27 @@ public class Exceptions {
         checkEntry(personName,NAME_PATTERN,"Invalid format for name");
         checkEntry(personSurname,SURNAME_PATTERN,"Invalid format for surname");
         checkEntry(personBirthday,DATE_PATTERN,"Invalid format for date");
-        checkEntry(foreignKey,NUM_PATTERN,"Invalid format for number");
+        if(address_id != "")
+            checkEntry(address_id,NUM_PATTERN,"Invalid format for number");
+    }
+    
+    public static void checkUserData(String []content) {
+        String nickname;
+        String password;
+        String person_id;
+        
+        try {
+            nickname = content[0];
+            password = content[1];
+            person_id = content[2];
+        }
+        catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("There are not enough data"
+                    + " inside content array!, error from person controller");
+        }
+        
+        checkEntry(nickname,NICKNAME_PATTERN,"Invalid format for nickname");
+        checkEntry(password,PASS_PATTERN,"Invalid format for password");
+        checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
     }
 }
