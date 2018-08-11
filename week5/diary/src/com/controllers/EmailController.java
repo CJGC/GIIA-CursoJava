@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.Email;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -32,7 +33,7 @@ public class EmailController extends Controllers {
             content[0] -> name
             content[1] -> foreign key (person id)
         */
-        
+        Exceptions.checkEmailData(content);
         String sql = "INSERT INTO Email (name,person_id) "
                 + "VALUES (?,?);";
         int email_id = -1;
@@ -100,7 +101,7 @@ public class EmailController extends Controllers {
             content[0] -> name
             content[1] -> foreign key (person id)
         */
-        
+        Exceptions.checkEmailData(content);
         String sql = "UPDATE Email SET "
             + "name='" + content[0] + "',"
             + "person_id='" + content[1] + "'"
