@@ -30,27 +30,26 @@ public class PhoneController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> number
-            content[1] -> countryCode
-            content[2] -> foreign key (person id)
-        */
         Exceptions.checkPhoneData(content);
+        String phoneNumber = content[0];
+        String countryCode = content[1];
+        int person_id = Integer.parseInt(content[2]);
+        
         String sql = "INSERT INTO Phone (number,countryCode,person_id) "
                 + "VALUES (?,?,?);";
         int phone_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setString(2,content[1]);
-            prstmt.setInt(3,Integer.parseInt(content[2]));
+            prstmt.setString(1,phoneNumber);
+            prstmt.setString(2,countryCode);
+            prstmt.setInt(3,person_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("Phone register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create phone register");
             return;
         }
         
@@ -72,14 +71,19 @@ public class PhoneController extends Controllers {
 
         Phone phone = new Phone();
         phone.setPhone_id(phone_id);
-        phone.setNumber(content[0]);
-        phone.setCountryCode(content[1]);
-        phone.setPerson_id(Integer.parseInt(content[2]));
+        phone.setNumber(phoneNumber);
+        phone.setCountryCode(countryCode);
+        phone.setPerson_id(person_id);
         objects.put(Integer.toString(phone_id), phone);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("Phone map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM Phone WHERE phone_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -91,26 +95,25 @@ public class PhoneController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Phone map does not have the specified key!");
-            return;
-        }
-        
         objects.remove(id);
     }
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> number
-            content[1] -> countryCode
-            content[2] -> foreign key (person id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("Phone map does not have the specified key!");
+            return;
+        }
+
         Exceptions.checkPhoneData(content);
+        String phoneNumber = content[0];
+        String countryCode = content[1];
+        int person_id = Integer.parseInt(content[2]);
+        
         String sql = "UPDATE Phone SET "
-            + "number='" + content[0] + "',"
-            + "countryCode='" + content[1] + "',"
-            + "person_id='" + content[2] + "'"
+            + "number='" + phoneNumber + "',"
+            + "countryCode='" + countryCode + "',"
+            + "person_id='" + person_id + "'"
             + " WHERE phone_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -122,16 +125,11 @@ public class PhoneController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("Phone map does not have the specified key!");
-            return;
-        }
-        
         Phone phone = (Phone) objects.get(id);
         phone.setPhone_id(id);
-        phone.setNumber(content[0]);
-        phone.setCountryCode(content[1]);
-        phone.setPerson_id(Integer.parseInt(content[2]));
+        phone.setNumber(phoneNumber);
+        phone.setCountryCode(countryCode);
+        phone.setPerson_id(person_id);
     }
     
     @Override
