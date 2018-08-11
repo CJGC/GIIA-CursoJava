@@ -88,7 +88,9 @@ public class PersonController {
             }
             else prstmt.setBinaryStream(5,null);
             
-            prstmt.setInt(6,Integer.parseInt(content[3]));
+            if(content[3] != "") prstmt.setInt(6,Integer.parseInt(content[3]));
+            else prstmt.setNull(6,java.sql.Types.INTEGER);
+            
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -126,7 +128,7 @@ public class PersonController {
         person.setAge(age);
         person.setBirthday(date);
         person.setPhoto(photo);
-        person.setAddress_id(Integer.parseInt(content[3]));
+        if(content[3] != "") person.setAddress_id(Integer.parseInt(content[3]));
         objects.put(Integer.toString(person_id), person);
     }
     
@@ -184,7 +186,9 @@ public class PersonController {
             }
             else prstmt.setBinaryStream(5,null);
             
-            prstmt.setInt(6,Integer.parseInt(content[3]));
+            if(content[3] != "") prstmt.setInt(6,Integer.parseInt(content[3]));
+            else prstmt.setNull(6,java.sql.Types.INTEGER);
+            
             prstmt.setInt(7, id);
             prstmt.executeUpdate();
             System.out.println("Requested person was updated successfully");
@@ -212,7 +216,7 @@ public class PersonController {
         person.setAge(age);
         person.setBirthday(date);
         person.setPhoto(photo);
-        person.setAddress_id(Integer.parseInt(content[3]));
+        if(content[3] != "") person.setAddress_id(Integer.parseInt(content[3]));
     }
     
     public void show() {
