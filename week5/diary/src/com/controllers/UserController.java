@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.User;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -34,7 +35,7 @@ public class UserController extends Controllers {
             content[1] -> password
             content[2] -> foreign key (person id)
         */
-        
+        Exceptions.checkUserData(content);
         String sql = "INSERT INTO User (nickname,password,person_id) "
                 + "VALUES (?,?,?);";
         int user_id = -1;
@@ -105,7 +106,7 @@ public class UserController extends Controllers {
             content[1] -> password
             content[2] -> foreign key (person id)
         */
-        
+        Exceptions.checkUserData(content);
         String sql = "UPDATE User SET "
             + "nickname='" + content[0] + "',"
             + "password='" + content[1] + "',"
