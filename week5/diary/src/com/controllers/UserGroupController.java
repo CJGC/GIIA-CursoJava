@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.UserGroup;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -33,7 +34,7 @@ public class UserGroupController extends Controllers {
             content[0] -> group_id
             content[1] -> user_id
         */
-        
+        Exceptions.checkUserGroupData(content);
         String sql = "INSERT INTO UserGroup (group_id,user_id) "
                 + "VALUES (?,?);";
         int userGroup_id = -1;
@@ -103,7 +104,7 @@ public class UserGroupController extends Controllers {
             content[0] -> group_id
             content[1] -> user_id
         */
-        
+        Exceptions.checkUserGroupData(content);
         String sql = "UPDATE UserGroup SET "
             + "group_id='" + content[0] + "',"
             + "user_id='" + content[1] + "'"

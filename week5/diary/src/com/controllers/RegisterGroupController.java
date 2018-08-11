@@ -1,5 +1,6 @@
 package com.controllers;
 import com.model.RegisterGroup;
+import com.exceptions.Exceptions;
 import com.database.DBManagement;
 import java.sql.*;
 /**
@@ -33,7 +34,7 @@ public class RegisterGroupController extends Controllers {
             content[0] -> group_id
             content[1] -> register_id
         */
-        
+        Exceptions.checkRegisterGroupData(content);
         String sql = "INSERT INTO RegisterGroup (group_id,register_id) "
                 + "VALUES (?,?);";
         int registerGroup_id = -1;
@@ -105,7 +106,7 @@ public class RegisterGroupController extends Controllers {
             content[0] -> group_id
             content[1] -> register_id
         */
-        
+        Exceptions.checkRegisterGroupData(content);
         String sql = "UPDATE RegisterGroup SET "
             + "group_id='" + content[0] + "',"
             + "register_id='" + content[1] + "'"
