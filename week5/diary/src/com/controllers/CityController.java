@@ -28,24 +28,23 @@ public class CityController extends Controllers {
     
     @Override
     public void create(String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> city name
-            content[1] -> foreign key (province id)
-        */
         Exceptions.checkCityData(content);
+        String cityName = content[0];
+        int province_id = Integer.parseInt(content[1]);
+        
         String sql = "INSERT INTO City (name,province_id) VALUES (?,?);";
         int city_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
-            prstmt.setString(1,content[0]);
-            prstmt.setInt(2,Integer.parseInt(content[1]));
+            prstmt.setString(1,cityName);
+            prstmt.setInt(2,province_id);
             prstmt.executeUpdate();
             prstmt.close();
-            System.out.println("Register was created successfully");
+            System.out.println("City register was created successfully");
         }
         catch(SQLException e) {
-            System.err.println("Was not possible create register");
+            System.err.println("Was not possible create city register");
             return;
         }
         
@@ -67,13 +66,18 @@ public class CityController extends Controllers {
 
         City city = new City();
         city.setCity_id(city_id);
-        city.setName(content[0]);
-        city.setProvince_id(Integer.parseInt(content[1]));
+        city.setName(cityName);
+        city.setProvince_id(province_id);
         objects.put(Integer.toString(city_id), city);
     }
     
     @Override
     public void delete(int id) {
+        if(!objects.containsKey(id)) {
+            System.err.println("City map does not have the specified key!");
+            return;
+        }
+        
         String sql = "DELETE FROM City WHERE city_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -81,13 +85,7 @@ public class CityController extends Controllers {
             rs.close();
         }
         catch(SQLException e) {
-            System.err.println("Was not possible delete the requested "
-                + "city");
-            return;
-        }
-        
-        if(!objects.containsKey(id)) {
-            System.err.println("City map does not have the specified key!");
+            System.err.println("Was not possible delete the requested city");
             return;
         }
         
@@ -96,14 +94,18 @@ public class CityController extends Controllers {
     
     @Override
     public void edit(int id, String[] content) {
-        /* --------- Content array contains ---------
-            content[0] -> city name
-            content[1] -> foreign key (province id)
-        */
+        if(!objects.containsKey(id)) {
+            System.err.println("City map does not have the specified key!");
+            return;
+        }
+        
         Exceptions.checkCityData(content);
+        String cityName = content[0];
+        int province_id = Integer.parseInt(content[1]);
+        
         String sql = "UPDATE City SET "
-            + "name='" + content[0] + "',"
-            + "province_id='" + content[1] + "'"
+            + "name='" + cityName + "',"
+            + "province_id='" + province_id + "'"
             + " WHERE city_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -115,15 +117,10 @@ public class CityController extends Controllers {
             return;
         }
         
-        if(!objects.containsKey(id)) {
-            System.err.println("City map does not have the specified key!");
-            return;
-        }
-        
         City city = (City) objects.get(id);
         city.setCity_id(id);
-        city.setName(content[0]);
-        city.setProvince_id(Integer.parseInt(content[1]));
+        city.setName(cityName);
+        city.setProvince_id(province_id);
     }
     
     @Override
