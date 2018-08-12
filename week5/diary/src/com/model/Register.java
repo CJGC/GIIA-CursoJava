@@ -7,6 +7,7 @@ public class Register {
     private int register_id;
     private String nickname;
     private int person_id;
+    private int user_id;
 
     public int getRegister_id() {
         return register_id;
@@ -30,5 +31,13 @@ public class Register {
 
     public void setPerson_id(int person_id) {
         this.person_id = person_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }
