@@ -9,10 +9,10 @@ import java.awt.image.BufferedImage;
 public class Group {
     private int group_id;
     private String name;
-    private String owner;
-    private int maxAllowed;
     private BufferedImage photo;
-
+    private int maxAllowed;
+    private int user_id;
+    
     public int getGroup_id() {
         return group_id;
     }
@@ -29,14 +29,14 @@ public class Group {
         this.name = name;
     }
 
-    public String getOwner() {
-        return owner;
+    public BufferedImage getPhoto() {
+        return photo;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setPhoto(BufferedImage photo) {
+        this.photo = photo;
     }
-
+    
     public int getMaxAllowed() {
         return maxAllowed;
     }
@@ -45,11 +45,11 @@ public class Group {
         this.maxAllowed = maxAllowed;
     }
 
-    public BufferedImage getPhoto() {
-        return photo;
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setPhoto(BufferedImage photo) {
-        this.photo = photo;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }
