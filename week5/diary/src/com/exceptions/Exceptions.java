@@ -10,15 +10,15 @@ public class Exceptions {
     private final static String NAME_REGEX = "[a-zA-Z\\s]{1,100}";
     private final static String SURNAME_REGEX = "[a-zA-Z\\s]{1,100}";
     private final static String EMAIL_REGEX = "^[\\w_\\.]+@[a-zA-Z]+\\.com$";
-    private final static String DATE_REGEX = 
-            "[0-9]{1,4}\\-[0-9]{1,2}\\-[0-9]{1,2}";
+    private final static String DATE_REGEX = "[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}";
     private final static String ADDRESS_REGEX = "[a-zA-Z#\\-0-9\\s]{1,150}";
     private final static String NUM_REGEX = "[0-9]+";
     private final static String PASS_REGEX = "([a-z0-9@#$%A-Z]){6,16}";
     private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@\\s]{1,100}";
     private final static String PHONE_REGEX = "[0-9]{1,20}";
     private final static String COUN_COD_REGEX = "^\\([0-9]{1,2}\\)$";
-    private final static String GROUP_NAME_REGEX = "[a-zA-Z0-9#_$@()*+]{1,100}";
+    private final static String GROUP_NAME_REGEX = 
+            "[a-zA-Z0-9#_$@()*+\\s]{1,100}";
     
     
     private final static Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
@@ -162,10 +162,12 @@ public class Exceptions {
     public static void checkRegisterData(String []content) {
         String nickname;
         String person_id;
+        String user_id;
         
         try {
             nickname = content[0];
             person_id = content[1];
+            user_id = content[2];
         }
         catch (IndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException("There are not enough data"
@@ -175,6 +177,7 @@ public class Exceptions {
         checkEntry(nickname,NICKNAME_PATTERN,
                 "Invalid format for register nickname");
         checkEntry(person_id,NUM_PATTERN,"Invalid format for number");
+        checkEntry(user_id,NUM_PATTERN,"Invalid format for number");
     }
     
     public static void checkEmailData(String []content) {
@@ -218,10 +221,12 @@ public class Exceptions {
     public static void checkGroupData(String []content) {
         String name;
         String maxAllowed;
+        String user_id;
         
         try {
             name = content[0];
             maxAllowed = content[1];
+            user_id = content[2];
         }
         catch (IndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException("There are not enough data"
@@ -230,26 +235,9 @@ public class Exceptions {
         
         checkEntry(name,GROUP_NAME_PATTERN,"Invalid format for group name");
         checkEntry(maxAllowed,NUM_PATTERN,"Invalid format for number");
-    }
-    
-    public static void checkUserGroupData(String []content) {
-        String group_id;
-        String user_id;
-        
-        try {
-            group_id = content[0];
-            user_id = content[1];
-        }
-        catch (IndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException("There are not enough data"
-                    + " inside content array!, error from user group "
-                    + "controller");
-        }
-        
-        checkEntry(group_id,NUM_PATTERN,"Invalid format for number");
         checkEntry(user_id,NUM_PATTERN,"Invalid format for number");
     }
-
+    
     public static void checkRegisterGroupData(String []content) {
         String group_id;
         String register_id;
