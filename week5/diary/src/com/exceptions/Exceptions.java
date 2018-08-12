@@ -7,16 +7,18 @@ import java.util.regex.Pattern;
  */
 public class Exceptions {
     private static Matcher matcher;
-    private final static String NAME_REGEX = "[a-zA-Z]+";
-    private final static String SURNAME_REGEX = "[a-zA-Z]+";
+    private final static String NAME_REGEX = "[a-zA-Z\\s]{1,100}";
+    private final static String SURNAME_REGEX = "[a-zA-Z\\s]{1,100}";
     private final static String EMAIL_REGEX = "^[\\w_\\.]+@[a-zA-Z]+\\.com$";
-    private final static String DATE_REGEX = "[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}";
+    private final static String DATE_REGEX = 
+            "[0-9]{1,4}\\-[0-9]{1,2}\\-[0-9]{1,2}";
     private final static String ADDRESS_REGEX = "[a-zA-Z#\\-0-9\\s]{1,150}";
     private final static String NUM_REGEX = "[0-9]+";
     private final static String PASS_REGEX = "([a-z0-9@#$%A-Z]){6,16}";
-    private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@\\s]+";
+    private final static String NICKNAME_REGEX = "[a-zA-Z0-9_$@\\s]{1,100}";
     private final static String PHONE_REGEX = "[0-9]{1,20}";
     private final static String COUN_COD_REGEX = "^\\([0-9]{1,2}\\)$";
+    private final static String GROUP_NAME_REGEX = "[a-zA-Z0-9#_$@()*+]{1,100}";
     
     
     private final static Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
@@ -33,12 +35,14 @@ public class Exceptions {
     private final static Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private final static Pattern COUN_COD_PATTERN = 
             Pattern.compile(COUN_COD_REGEX);
+    private final static Pattern GROUP_NAME_PATTERN = 
+            Pattern.compile(GROUP_NAME_REGEX);
     
     private static void checkEntry(String entry,Pattern pattern,String message)
     {
         matcher = pattern.matcher(entry);
         if(!matcher.matches())
-            throw new IllegalArgumentException(message);
+            System.err.println(message);
     }
     
     public static void checkCountryData(String []content) {
@@ -224,7 +228,7 @@ public class Exceptions {
                     + " inside content array!, error from group controller");
         }
         
-        checkEntry(name,NAME_PATTERN,"Invalid format for group name");
+        checkEntry(name,GROUP_NAME_PATTERN,"Invalid format for group name");
         checkEntry(maxAllowed,NUM_PATTERN,"Invalid format for number");
     }
     
