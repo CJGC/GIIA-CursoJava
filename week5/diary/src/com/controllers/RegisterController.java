@@ -19,6 +19,7 @@ public class RegisterController extends Controllers {
                 register.setRegister_id(rs.getInt("register_id"));
                 register.setNickname(rs.getString("nickname"));
                 register.setPerson_id(rs.getInt("person_id"));
+                register.setUser_id(rs.getInt("user_id"));
                 objects.put(register.getRegister_id(), register);
             }
         }
@@ -31,16 +32,20 @@ public class RegisterController extends Controllers {
     @Override
     public void create(String[] content) {
         Exceptions.checkRegisterData(content);
+        
         String registerNickname = content[0];
         int person_id = Integer.parseInt(content[1]);
-        String sql = "INSERT INTO Register (nickname,person_id) "
-                + "VALUES (?,?);";
+        int user_id = Integer.parseInt(content[2]);
+        
+        String sql = "INSERT INTO Register (nickname,person_id,user_id) "
+                + "VALUES (?,?,?);";
         int register_id = -1;
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
             prstmt.setString(1,registerNickname);
             prstmt.setInt(2,person_id);
+            prstmt.setInt(3,user_id);
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Register was created successfully");
@@ -70,6 +75,7 @@ public class RegisterController extends Controllers {
         register.setRegister_id(register_id);
         register.setNickname(registerNickname);
         register.setPerson_id(person_id);
+        register.setUser_id(user_id);
         objects.put(register_id, register);
     }
     
@@ -105,10 +111,12 @@ public class RegisterController extends Controllers {
         Exceptions.checkRegisterData(content);
         String registerNickname = content[0];
         int person_id = Integer.parseInt(content[1]);
+        int user_id = Integer.parseInt(content[2]);
         
         String sql = "UPDATE Register SET "
             + "nickname='" + registerNickname + "',"
-            + "person_id='" + person_id + "'"
+            + "person_id='" + person_id + "',"
+            + "user_id='" + user_id + "'"
             + " WHERE register_id=" + id + ";";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
@@ -125,6 +133,7 @@ public class RegisterController extends Controllers {
         register.setRegister_id(id);
         register.setNickname(registerNickname);
         register.setPerson_id(person_id);
+        register.setUser_id(user_id);
     }
     
     @Override
@@ -133,7 +142,8 @@ public class RegisterController extends Controllers {
             Register register = (Register) objects.get(obj);
             System.out.println("Register id: " + register.getRegister_id());
             System.out.println("Register nickname: " + register.getNickname());
-            System.out.println("Person id: " + register.getPerson_id() + "\n");
+            System.out.println("Person id: " + register.getPerson_id());
+            System.out.println("Associated user: " +register.getUser_id()+"\n");
         });
     }
 }
