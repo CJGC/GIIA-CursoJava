@@ -34,6 +34,7 @@ public class GroupController {
                 if(IS != null) photo = ImageIO.read(IS);
                 group.setPhoto(photo);
                 group.setMaxAllowed(rs.getInt("maxAllowed"));
+                group.setUser_id(rs.getInt("user_id"));
                 objects.put(group.getGroup_id(), group);
             }
         }
@@ -44,10 +45,13 @@ public class GroupController {
     
     public void create(String[] content,BufferedImage photo) throws IOException{
         Exceptions.checkGroupData(content);
+        
         String groupName = content[0];
         int maxAllowed = Integer.parseInt(content[1]);
-        String sql = "INSERT INTO _Group (name,photo,maxAllowed) "
-                + "VALUES (?,?,?);";
+        int user_id = Integer.parseInt(content[2]);
+        
+        String sql = "INSERT INTO _Group (name,photo,maxAllowed,user_id) "
+                + "VALUES (?,?,?,?);";
         int group_id = -1;
         try {
             PreparedStatement prstmt;
@@ -66,6 +70,7 @@ public class GroupController {
             else prstmt.setBinaryStream(2,null);
             
             prstmt.setInt(3,maxAllowed);
+            prstmt.setInt(4, user_id);
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Group register was created successfully");
@@ -96,6 +101,7 @@ public class GroupController {
         group.setName(groupName);
         group.setPhoto(photo);
         group.setMaxAllowed(maxAllowed);
+        group.setUser_id(user_id);
         objects.put(group_id, group);
     }
     
@@ -130,9 +136,10 @@ public class GroupController {
         Exceptions.checkGroupData(content);
         String groupName = content[0];
         int maxAllowed = Integer.parseInt(content[1]);
+        int user_id = Integer.parseInt(content[2]);
         
         String sql = "UPDATE _Group SET "
-            + "name=?, photo=?, maxAllowed=? WHERE group_id=?";
+            + "name=?, photo=?, maxAllowed=?, user_id=? WHERE group_id=?";
         try {
             PreparedStatement prstmt;
             prstmt = DBManagement.getConnection().prepareStatement(sql);
@@ -149,7 +156,8 @@ public class GroupController {
             else prstmt.setBinaryStream(2,null);
             
             prstmt.setInt(3,maxAllowed);
-            prstmt.setInt(4, id);
+            prstmt.setInt(4,user_id);
+            prstmt.setInt(5,id);
             prstmt.executeUpdate();
             prstmt.close();
             System.out.println("Requested group was updated successfully");
@@ -164,6 +172,7 @@ public class GroupController {
         group.setName(groupName);
         group.setPhoto(photo);
         group.setMaxAllowed(maxAllowed);
+        group.setUser_id(user_id);
     }
     
     public void show() {
@@ -171,8 +180,8 @@ public class GroupController {
             Group group = (Group) objects.get(obj);
             System.out.println("Group id: " + group.getGroup_id());
             System.out.println("Group name: " + group.getName());
-            System.out.println("Group capacity: " + group.getMaxAllowed() + 
-                "\n");
+            System.out.println("Group capacity: " + group.getMaxAllowed());
+            System.out.println("Group owner: " + group.getUser_id() + "\n");
         });
     }
 }
