@@ -11,8 +11,8 @@ public class Person {
     private int person_id;
     private String name;
     private String surname;
-    private int age;
     private Date birthday;
+    private int age;
     private BufferedImage photo;
     private int address_id;
 
@@ -40,14 +40,6 @@ public class Person {
         this.surname = surname;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public Date getBirthday() {
         return birthday;
     }
@@ -56,6 +48,14 @@ public class Person {
         this.birthday = birthday;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+    
     public BufferedImage getPhoto() {
         return photo;
     }
