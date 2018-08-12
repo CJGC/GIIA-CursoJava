@@ -21,25 +21,26 @@ public class MainClass {
         
         DBManagement.buildConnection();
         DBManagement.buildStmt();
-//        DBManagement.createTables(TablesDefinition.countryTable);
-//        DBManagement.createTables(TablesDefinition.provinceTable);
-//        DBManagement.createTables(TablesDefinition.cityTable);
-//        DBManagement.createTables(TablesDefinition.addressTable);
-//        DBManagement.createTables(TablesDefinition.personTable);
-//        DBManagement.createTables(TablesDefinition.emailTable);
-//        DBManagement.createTables(TablesDefinition.phoneTable);
-//        DBManagement.createTables(TablesDefinition.registerTable);
-//        DBManagement.createTables(TablesDefinition.userTable);
-//        DBManagement.createTables(TablesDefinition.groupTable);
-//        DBManagement.createTables(TablesDefinition.userGroupTable);
-//        DBManagement.createTables(TablesDefinition.registerGroupTable);
         
-        GroupController ec= new GroupController();
-        String[] values = {"Fighters group","250"};
+//        DBManagement.createTables(TablesDefinition.COUNTRY_TABLE);
+//        DBManagement.createTables(TablesDefinition.PROVINCE_TABLE);
+//        DBManagement.createTables(TablesDefinition.CITY_TABLE);
+//        DBManagement.createTables(TablesDefinition.ADDRESS_TABLE);
+//        DBManagement.createTables(TablesDefinition.PERSON_TABLE);
+//        DBManagement.createTables(TablesDefinition.EMAIL_TABLE);
+//        DBManagement.createTables(TablesDefinition.PHONE_TABLE);
+//        DBManagement.createTables(TablesDefinition.USER_TABLE);
+//        DBManagement.createTables(TablesDefinition.REGISTER_TABLE);
+//        DBManagement.createTables(TablesDefinition.GROUP_TABLE);
+//        DBManagement.createTables(TablesDefinition.REGISTER_GROUP_TABLE);
+        
+        //GroupController ec= new GroupController();
+        //String[] values = {"Fighters group","250"};
         //ec.create(values,img);
         //ec.edit(1,values,img);
         //ec.delete(1);
-        ec.show();
+        //ec.show();
+        
         DBManagement.closeStmt();
         DBManagement.disconnect();
     }
