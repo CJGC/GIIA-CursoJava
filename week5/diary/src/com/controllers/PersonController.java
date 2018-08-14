@@ -100,7 +100,7 @@ public class PersonController {
             return;
         }
         
-        sql = "SELECT * FROM Person;";
+        sql = "SELECT MAX(person_id) AS person_id FROM Person;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

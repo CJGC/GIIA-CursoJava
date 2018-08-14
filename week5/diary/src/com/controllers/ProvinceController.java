@@ -48,7 +48,7 @@ public class ProvinceController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Province;";
+        sql = "SELECT MAX(province_id) AS province_id FROM Province;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

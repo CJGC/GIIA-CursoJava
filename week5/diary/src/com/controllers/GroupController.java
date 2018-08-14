@@ -80,7 +80,7 @@ public class GroupController {
             return;
         }
         
-        sql = "SELECT * FROM _Group;";
+        sql = "SELECT MAX(group_id) AS group_id FROM _Group;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

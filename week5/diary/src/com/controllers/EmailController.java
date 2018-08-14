@@ -54,7 +54,7 @@ public class EmailController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Email;";
+        sql = "SELECT MAX(email_id) AS email_id FROM Email;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

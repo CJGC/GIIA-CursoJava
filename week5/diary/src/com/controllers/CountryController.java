@@ -45,7 +45,7 @@ public class CountryController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Country;";
+        sql = "SELECT MAX(country_id) AS country_id FROM Country;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

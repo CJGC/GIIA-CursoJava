@@ -55,7 +55,7 @@ public class RegisterController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Register;";
+        sql = "SELECT MAX(register_id) AS register_id FROM Register;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

@@ -48,7 +48,7 @@ public class AddressController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Address;";
+        sql = "SELECT MAX(address_id) AS address_id FROM Address;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

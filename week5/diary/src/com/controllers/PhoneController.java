@@ -53,7 +53,7 @@ public class PhoneController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM Phone;";
+        sql = "SELECT MAX(phone_id) AS phone_id FROM Phone;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

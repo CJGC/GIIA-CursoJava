@@ -48,7 +48,7 @@ public class CityController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM City;";
+        sql = "SELECT MAX(city_id) AS city_id FROM City;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();

@@ -53,7 +53,7 @@ public class UserController extends Controllers {
             return;
         }
         
-        sql = "SELECT * FROM User;";
+        sql = "SELECT MAX(user_id) AS user_id FROM User;";
         try {
             ResultSet rs = DBManagement.getStatement().executeQuery(sql);
             rs.last();
