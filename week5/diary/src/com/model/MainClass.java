@@ -14,13 +14,13 @@ public class MainClass {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
-        
-        BufferedImage img;
-        img = ImageIO.read(new File("/home/cj/Desktop/workspace/GIIA-CursoJava/week5/diary/src/com/model/1.jpeg"));
-        
-        DBManagement.buildConnection();
-        DBManagement.buildStmt();
+//    public static void main(String[] args) throws IOException {
+//        
+//        BufferedImage img;
+//        img = ImageIO.read(new File("/home/cj/Desktop/workspace/GIIA-CursoJava/week5/diary/src/com/model/1.jpeg"));
+//        
+//        DBManagement.buildConnection();
+//        DBManagement.buildStmt();
         
 //        DBManagement.createTables(TablesDefinition.COUNTRY_TABLE);
 //        DBManagement.createTables(TablesDefinition.PROVINCE_TABLE);
@@ -41,8 +41,8 @@ public class MainClass {
         //ec.delete(1);
         //ec.show();
         
-        DBManagement.closeStmt();
-        DBManagement.disconnect();
-    }
+//        DBManagement.closeStmt();
+//        DBManagement.disconnect();
+//    }
     
 }
